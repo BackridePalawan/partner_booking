@@ -1,10 +1,14 @@
-<div class="h-screen w-full bg-primary flex justify-center items-center p-4">
+<app-loading-component *ngIf="loadingPage"></app-loading-component>
+<div
+  class="h-screen w-full bg-primary flex justify-center items-center p-4 relative"
+>
   <div
     class="w-[500px] bg-white p-7 rounded-lg shadow-lg"
     data-aos="fade-right"
     data-aos-offset="300"
     data-aos-duration="1000"
     data-aos-easing="ease-in-sine"
+    *ngIf="!otpRequest"
   >
     <div class="w-full flex flex-col items-center mb-4">
       <img
@@ -15,76 +19,143 @@
       <p class="text-2xl font-bold">Become a BRP Affiliate Partner</p>
     </div>
     <div class="px-6">
-      <label
-        for="fullname"
-        class="text-md my-3 block font-semibold text-gray-800"
-        >Full Name</label
-      >
-      <input
-        type="text"
-        formcontrolname="user"
-        id="fullname"
-        required=""
-        placeholder="Full Name"
-        class="w-full rounded-lg bg-gray-100 px-4 py-2 focus:outline-none shadow-lg border border-solid border-[#00000075]"
-      />
-      <label for="email" class="text-md my-3 block font-semibold text-gray-800"
-        >Email Address</label
-      >
-      <input
-        type="mail"
-        formcontrolname="user"
-        id="email"
-        required=""
-        placeholder="email"
-        class="border border-solid border-[#00000075] w-full rounded-lg bg-gray-100 px-4 py-2 focus:outline-none shadow-lg"
-      />
-      <label
-        for="phoneNumber"
-        class="text-md my-3 block font-semibold text-gray-800"
-        >Phone Number</label
-      >
-      <input
-        type="text"
-        formcontrolname="user"
-        id="phoneNumber"
-        required=""
-        placeholder="09*********"
-        class="border border-solid border-[#00000075] w-full rounded-lg bg-gray-100 px-4 py-2 focus:outline-none shadow-lg"
-      />
-      <label
-        for="password"
-        class="text-md my-3 block font-semibold text-gray-800"
-        >Password</label
-      >
-      <input
-        type="text"
-        formcontrolname="user"
-        id="password"
-        required=""
-        placeholder="Password"
-        class="border border-solid border-[#00000075] w-full rounded-lg bg-gray-100 px-4 py-2 focus:outline-none shadow-lg"
-      />
-      <label
-        for="confirmPassword"
-        class="text-md my-3 block font-semibold text-gray-800"
-        >Confirm Password</label
-      >
-      <input
-        type="text"
-        formcontrolname="user"
-        id="confirmPassword"
-        required=""
-        placeholder="Confirm Password"
-        class="border border-solid border-[#00000075] w-full rounded-lg bg-gray-100 px-4 py-2 focus:outline-none shadow-lg"
-      />
-      <div class="my-10"></div>
-      <button
-        type="submit"
-        class="text-md btn w-full bg-primary-dark text-white hover:bg-primary py-3 rounded-lg"
-      >
-        Create an account
-      </button>
+      <form (ngSubmit)="submit()" [formGroup]="form">
+        <div class="flex flex-col justify-center items-center w-full">
+          <label
+            for="picture"
+            class="h-[100px] w-[150px] border border-solid p-4 shadow-lg rounded-lg"
+            [class.border-[red]]="submitted && form.get('userImage')!.invalid"
+          >
+            <img [src]="imageUrl" class="object-contain w-full h-full" alt="" />
+          </label>
+          <input
+            type="file"
+            name=""
+            id="picture"
+            class="hidden"
+            (change)="onFileSelected($event)"
+          />
+          <p class="font-semibold text-gray-800 text-16 text-center mt-5">
+            Upload Selfie
+          </p>
+        </div>
+        <label
+          for="fullname"
+          class="text-md my-3 block font-semibold text-gray-800"
+          >Full Name</label
+        >
+        <input
+          type="text"
+          formControlName="name"
+          id="fullname"
+          required=""
+          placeholder="Juan Dela Cruz"
+          class="w-full rounded-lg bg-gray-100 px-4 py-2 focus:outline-none shadow-lg border border-solid border-[#00000075]"
+        />
+        <p
+          class="error-message mt-2"
+          *ngIf="submitted && form.get('name')?.errors?.['required']"
+        >
+          Phone is required
+        </p>
+        <label
+          for="email"
+          class="text-md my-3 block font-semibold text-gray-800"
+          >Email Address</label
+        >
+        <input
+          type="mail"
+          formControlName="email"
+          id="email"
+          required=""
+          placeholder="juandelacruz@gmail.com"
+          class="border border-solid border-[#00000075] w-full rounded-lg bg-gray-100 px-4 py-2 focus:outline-none shadow-lg"
+        />
+        <p
+          class="error-message mt-2"
+          *ngIf="submitted && form.get('email')?.errors?.['email']"
+        >
+          Unsupported Email Format
+        </p>
+        <p
+          class="error-message mt-2"
+          *ngIf="submitted && form.get('email')?.errors?.['required']"
+        >
+          Email is required
+        </p>
+        <label
+          for="phoneNumber"
+          class="text-md my-3 block font-semibold text-gray-800"
+          >Phone Number</label
+        >
+        <input
+          type="text"
+          formControlName="phone"
+          id="phoneNumber"
+          required=""
+          placeholder="09*********"
+          class="border border-solid border-[#00000075] w-full rounded-lg bg-gray-100 px-4 py-2 focus:outline-none shadow-lg"
+        />
+        <p
+          class="error-message mt-2"
+          *ngIf="submitted && form.get('phone')?.errors?.['required']"
+        >
+          Phone is required
+        </p>
+        <label
+          for="password"
+          class="text-md my-3 block font-semibold text-gray-800"
+          >Password</label
+        >
+        <input
+          type="password"
+          formControlName="password"
+          id="password"
+          required=""
+          placeholder="Password"
+          class="border border-solid border-[#00000075] w-full rounded-lg bg-gray-100 px-4 py-2 focus:outline-none shadow-lg"
+        />
+        <p
+          class="error-message mt-2"
+          *ngIf="submitted && form.get('password')!.invalid"
+        >
+          Password is required
+        </p>
+        <label
+          for="confirmPassword"
+          class="text-md my-3 block font-semibold text-gray-800"
+          >Confirm Password</label
+        >
+        <input
+          type="password"
+          formControlName="confirmPassword"
+          id="confirmPassword"
+          required=""
+          placeholder="Confirm Password"
+          class="border border-solid border-[#00000075] w-full rounded-lg bg-gray-100 px-4 py-2 focus:outline-none shadow-lg"
+        />
+        <p
+          class="error-message mt-2"
+          *ngIf="submitted && form.get('confirmPassword')!.invalid"
+        >
+          Confirm password is required
+        </p>
+        <p
+          class="error-message mt-2"
+          *ngIf="
+            form.get('confirmPassword')!.value !== form.get('password')!.value
+          "
+        >
+          Password not match
+        </p>
+        <div class="my-10"></div>
+        <button
+          type="submit"
+          class="text-md btn w-full bg-primary-dark text-white hover:bg-primary py-3 rounded-lg"
+        >
+          Create an account
+        </button>
+      </form>
       <div class="mb-10"></div>
       <button
         routerLink="/login"
@@ -93,5 +164,51 @@
         Login
       </button>
     </div>
+  </div>
+
+  <div
+    class="w-[500px] bg-secondary p-5 rounded-lg shadow-lg"
+    data-aos="zoom-out-down"
+    *ngIf="otpRequest"
+  >
+    <p class="text-center">
+      <i class="fa-solid fa-user-plus text-7xl text-primary-dark"></i>
+    </p>
+    <div class="my-5"></div>
+    <h1 class="text-2xl text-white text-center">Registration</h1>
+    <div class="my-5"></div>
+    <div>
+      <p class="text-1xl text-white text-start">
+        Once you receive the OTP on your phone, enter it below to complete the
+        registration process.
+      </p>
+
+      <form action="" [formGroup]="Otpform">
+        <div class="flex justify-center items-center">
+          <p-inputOtp
+            pAutoFocus
+            [autofocus]="true"
+            [length]="6"
+            formControlName="code"
+            class="my-3"
+          ></p-inputOtp>
+        </div>
+
+        <button
+          class="w-full bg-primary text-white py-2 rounded-lg shadow-lg hover:bg-primary-dark"
+          (click)="verifyOtp()"
+        >
+          Send OTP
+        </button>
+      </form>
+    </div>
+    <div class="divider text-xs text-white">OR</div>
+    <div class="my-4"></div>
+    <button
+      class="w-full bg-primary-dark text-white py-2 rounded-lg shadow-lg hover:bg-primary"
+      routerLink="/login"
+    >
+      <i class="fa-solid fa-door-open"></i> &nbsp;&nbsp;Back to Login
+    </button>
   </div>
 </div>
