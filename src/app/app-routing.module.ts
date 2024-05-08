@@ -4,6 +4,7 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { BookComponent } from './book/book.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -14,6 +15,7 @@ const routes: Routes = [
     path: 'affiliate',
     children: [
       { path: 'dashboard', component: DashboardComponent },
+      { path: 'book/customer', component: BookComponent },
       { path: '', component: DashboardComponent },
     ],
   },

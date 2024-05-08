@@ -11,8 +11,7 @@ import { Router } from '@angular/router';
   styleUrl: './register.component.scss',
 })
 export class RegisterComponent {
-  imageUrl =
-    'https://t4.ftcdn.net/jpg/01/07/57/91/360_F_107579101_QVlTG43Fwg9Q6ggwF436MPIBTVpaKKtb.jpg';
+  imageUrl = 'assets/images/camera.jpg';
 
   submitted = false;
   loadingPage = false;

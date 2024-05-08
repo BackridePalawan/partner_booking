@@ -1,3 +1,4 @@
+<app-loading-component *ngIf="loadingPage"></app-loading-component>
 <div class="flex flex-wrap h-screen">
   <div
     class="w-full md:w-[40%] sm:w-full h-full md:order-2 sm:order-1 bg-primary p-5 flex justify-center items-center"
@@ -17,43 +18,57 @@
         <p class="text-2xl font-bold">BRP Affiliate Partner Login</p>
       </div>
       <div class="px-6">
-        <label
-          for="email"
-          class="text-md my-3 block font-semibold text-gray-800"
-          >Email / Phone</label
-        >
-        <input
-          type="text"
-          formcontrolname="user"
-          id="email"
-          required=""
-          class="w-full rounded-lg bg-gray-100 px-4 py-2 focus:outline-none shadow-lg border border-solid border-[#00000075]"
-        />
-        <label
-          for="password"
-          class="text-md my-3 block font-semibold text-gray-800"
-          >Password</label
-        >
-        <input
-          type="text"
-          formcontrolname="user"
-          id="password"
-          required=""
-          class="border border-solid border-[#00000075] w-full rounded-lg bg-gray-100 px-4 py-2 focus:outline-none shadow-lg"
-        />
-        <div class="my-10"></div>
-        <p class="text-end text-link text-16 font-semibold">
-          <span class="hover:text-primary-dark" routerLink="/forgot-password"
-            >Forgot Password?</span
+        <form (ngSubmit)="login()" [formGroup]="form">
+          <label
+            for="email"
+            class="text-md my-3 block font-semibold text-gray-800"
+            >Email / Phone</label
           >
-        </p>
-        <div class="my-10"></div>
-        <button
-          type="submit"
-          class="text-md btn w-full bg-primary text-white hover:bg-primary-dark py-3 rounded-lg"
-        >
-          Login
-        </button>
+          <input
+            type="text"
+            formControlName="user"
+            id="email"
+            required=""
+            class="w-full rounded-lg bg-gray-100 px-4 py-2 focus:outline-none shadow-lg border border-solid border-[#00000075]"
+          />
+          <p
+            class="error-message mt-2"
+            *ngIf="submitted && form.get('user')?.errors?.['required']"
+          >
+            Email or Phone number is required
+          </p>
+          <label
+            for="password"
+            class="text-md my-3 block font-semibold text-gray-800"
+            >Password</label
+          >
+          <input
+            type="password"
+            formControlName="password"
+            id="password"
+            required=""
+            class="border border-solid border-[#00000075] w-full rounded-lg bg-gray-100 px-4 py-2 focus:outline-none shadow-lg"
+          />
+          <p
+            class="error-message mt-2"
+            *ngIf="submitted && form.get('password')?.errors?.['required']"
+          >
+            Password is required
+          </p>
+          <div class="my-10"></div>
+          <p class="text-end text-link text-16 font-semibold">
+            <span class="hover:text-primary-dark" routerLink="/forgot-password"
+              >Forgot Password?</span
+            >
+          </p>
+          <div class="my-10"></div>
+          <button
+            type="submit"
+            class="text-md btn w-full bg-primary text-white hover:bg-primary-dark py-3 rounded-lg"
+          >
+            Login
+          </button>
+        </form>
       </div>
       <div class="divider text-xs text-gray-500 px-6">OR</div>
       <div class="px-6">

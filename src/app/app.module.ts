@@ -17,15 +17,25 @@ import { LoadingComponentComponent } from './component/loading-component/loading
 import { PasswordModule } from 'primeng/password';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { SidebarComponent } from './component/sidebar/sidebar.component';
+import { BookComponent } from './book/book.component';
+import { MapboxComponent } from './component/mapbox/mapbox.component';
+import { DriverSearchComponent } from './component/driver-search/driver-search.component';
+import { ReceiptComponent } from './component/receipt/receipt.component';
+
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-
     RegisterComponent,
     ForgotPasswordComponent,
     LoadingComponentComponent,
     DashboardComponent,
+    SidebarComponent,
+    BookComponent,
+    MapboxComponent,
+    DriverSearchComponent,
+    ReceiptComponent,
   ],
   imports: [
     BrowserModule,
