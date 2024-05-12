@@ -1,0 +1,29 @@
+.divider-black {
+  padding-top: 0.15rem;
+  padding-bottom: 0.15rem;
+  background-color: black;
+}
+
+.divider-black-1 {
+  padding-top: 1px;
+  padding-bottom: 1px;
+  background-color: black;
+}
+
+.spinner {
+  width: 70px;
+  height: 70px;
+  border: 8px solid rgba(124, 174, 65, 0.2);
+  border-top: 8px solid #7cae41;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

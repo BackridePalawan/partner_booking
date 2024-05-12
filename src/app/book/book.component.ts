@@ -6,6 +6,9 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { error } from 'console';
+import { Subscription, timer } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-book',
@@ -13,20 +16,31 @@ import Swal from 'sweetalert2';
   styleUrl: './book.component.scss',
 })
 export class BookComponent implements OnInit {
+  title: string = '';
+  commission: any;
   vehiclesAvailable: any;
-  loadingPage: boolean = false;
+  bookorder: any;
+  book_order_details: any;
+  loadingPage: boolean = true;
   driverSearchPage: boolean = false;
-  openReciept: boolean = true;
+  openReciept: boolean = false;
   connectingMessage: string = 'Searching For Driver';
   driverDetails: any;
+  pollingSubscription: Subscription;
   constructor(
     private api: ApiServices,
     private router: Router,
     private formBuilder: FormBuilder
   ) {}
   ngOnInit(): void {
-    // this.getAvailbleVehicle();
+    this.getAffiliateCommission();
+
     this.setCurrentAddress();
+  }
+
+  ngOnDestroy(): void {
+    // Stop polling when the component is destroyed
+    this.stopPolling();
   }
 
   bookForm: FormGroup = this.formBuilder.group({
@@ -65,8 +79,8 @@ export class BookComponent implements OnInit {
   targetAddressPickOptions = {
     DELIVERY: {
       target: 'delivery',
-      buttonText: 'Set as delivery address',
-      placeholderText: 'Delivery address',
+      buttonText: 'Set as Affiliate address',
+      placeholderText: 'Affiliate address',
     },
     Destination: {
       target: 'destination',
@@ -225,10 +239,6 @@ export class BookComponent implements OnInit {
         next: (res) => {
           console.log(res);
           this.driverDetails = res;
-          this.connectingMessage = 'Connecting to Driver';
-
-          // console.log();
-
           let details = {
             passenger_name: this.bookForm.get('fullname')?.value,
             passenger_phone: this.bookForm.get('phone')?.value,
@@ -331,9 +341,10 @@ export class BookComponent implements OnInit {
 
   bookOrder(details: any) {
     this.api.booking(details).subscribe({
-      next: (res) => {
+      next: (res: any) => {
         console.log(res);
-        this.driverSearchPage = false;
+        this.bookorder = { order: res.order, commission: this.commission };
+        this.startPolling();
       },
       error: (error: HttpErrorResponse) => {
         console.log(error.error);
@@ -353,5 +364,79 @@ export class BookComponent implements OnInit {
         console.log(error);
       },
     });
+  }
+
+  getAffiliateCommission() {
+    this.api.getAffiliateCommision().subscribe({
+      next: (res: any) => {
+        this.commission = res.fixed_markup_amount;
+        console.log(this.commission);
+        this.getAvailbleVehicle();
+      },
+      error: (error: HttpErrorResponse) => {
+        console.log(error);
+      },
+    });
+  }
+
+  addAffiliateOrder() {
+    this.connectingMessage = 'Preparing for the Reciept';
+    console.log({
+      order_id: this.bookorder.order.id,
+      commission: this.commission,
+    });
+    this.api
+      .addAffiliateBook({
+        order_id: this.bookorder.order.id,
+        commission: this.commission,
+      })
+      .subscribe({
+        next: (res) => {
+          this.openReciept = true;
+          this.driverSearchPage = false;
+        },
+        error: (error: HttpErrorResponse) => {
+          console.log(error);
+        },
+      });
+  }
+
+  orderPreview() {
+    this.api.getOrderDetails(this.bookorder.order.id).subscribe({
+      next: (res: any) => {
+        this.book_order_details = res;
+      },
+      error: (error: HttpErrorResponse) => {
+        console.log(error);
+      },
+    });
+  }
+
+  startPolling(): void {
+    this.connectingMessage = 'Connecting to the Driver';
+    // Use timer to emit values at a fixed interval
+    this.pollingSubscription = timer(0, 5000)
+      .pipe(switchMap(() => this.api.getOrderDetails(this.bookorder.order.id)))
+      .subscribe({
+        next: (res: any) => {
+          console.log(res);
+          this.book_order_details = res;
+          if (res.status !== 'pending') {
+            this.addAffiliateOrder();
+            // If the status is not 'pending', stop polling
+            this.stopPolling();
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.log(error);
+        },
+      });
+  }
+
+  stopPolling(): void {
+    // Unsubscribe from the polling subscription to stop further requests
+    if (this.pollingSubscription) {
+      this.pollingSubscription.unsubscribe();
+    }
   }
 }

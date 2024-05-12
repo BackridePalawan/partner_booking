@@ -22,6 +22,11 @@ import { BookComponent } from './book/book.component';
 import { MapboxComponent } from './component/mapbox/mapbox.component';
 import { DriverSearchComponent } from './component/driver-search/driver-search.component';
 import { ReceiptComponent } from './component/receipt/receipt.component';
+import { BookedCustomerComponent } from './booked-customer/booked-customer.component';
+import { NavHeaderComponent } from './component/nav-header/nav-header.component';
+import { OrderDetailsComponent } from './order-details/order-details.component';
+import { DatePipe } from '@angular/common';
+import { EarningStatisticComponent } from './earning-statistic/earning-statistic.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +41,10 @@ import { ReceiptComponent } from './component/receipt/receipt.component';
     MapboxComponent,
     DriverSearchComponent,
     ReceiptComponent,
+    BookedCustomerComponent,
+    NavHeaderComponent,
+    OrderDetailsComponent,
+    EarningStatisticComponent,
   ],
   imports: [
     BrowserModule,
@@ -48,7 +57,7 @@ import { ReceiptComponent } from './component/receipt/receipt.component';
     HttpClientModule,
     BrowserAnimationsModule,
   ],
-  providers: [provideClientHydration()],
+  providers: [provideClientHydration(), DatePipe],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

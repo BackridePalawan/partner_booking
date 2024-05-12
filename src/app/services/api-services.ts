@@ -100,10 +100,6 @@ export class ApiServices {
   }
 
   findAvailableDriver(pickup: string, dropoff: string, vehicleTypeID: string) {
-    console.log(
-      this.Root_URL_API + 'vehicle/' + vehicleTypeID + '/find_available'
-    );
-
     return this.http.get(
       `${this.Root_URL_API}vehicle/${vehicleTypeID}/find_available?pickup=${pickup}&dropoff=${dropoff}&type='ride'`,
 
@@ -111,20 +107,54 @@ export class ApiServices {
         headers: this.getTokenHeader(),
       }
     );
-    // return this.http.get(
-    //   this.Root_URL_API +
-    //     'vehicle/' +
-    //     vehicleTypeID +
-    //     '/find_availabl',location,
-    //   {
-    //     headers: this.getTokenHeader(),
-    //   }
-    // );
   }
 
   findVehicleTypes(vehicleTypeId: string) {
     return this.http.get(
       this.Root_URL_API + 'vehicle/types?branch_id=' + vehicleTypeId,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  getUserDetails() {
+    return this.http.get(`${this.Root_URL_API}user`, {
+      headers: this.getTokenHeader(),
+    });
+  }
+
+  getAffiliateOrders(page: string, status: string) {
+    return this.http.get(
+      `${this.Root_URL_API}affiliate-partner/orders/${status}?page=${page}`,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  getOrderDetails(orderID: string) {
+    return this.http.get(`${this.Root_URL_API}orders/${orderID}`, {
+      headers: this.getTokenHeader(),
+    });
+  }
+
+  addAffiliateBook(data: { order_id: string; commission: string }) {
+    return this.http.post(`${this.Root_URL_API}affiliate/book`, data, {
+      headers: this.getTokenHeader(),
+    });
+  }
+
+  getAffiliateCommision() {
+    return this.http.get(`${this.Root_URL_API}affiliate/commission`, {
+      headers: this.getTokenHeader(),
+    });
+  }
+
+  getEarnings(data: any, page: string) {
+    return this.http.post(
+      `${this.Root_URL_API}affiliate/earnings?page=${page}`,
+      data,
       {
         headers: this.getTokenHeader(),
       }

@@ -5,7 +5,8 @@
 ></app-driver-search>
 
 <app-sidebar></app-sidebar>
-<div class="sm:ml-64">
+<div class="md:ml-64">
+  <app-nav-header [title]="title"></app-nav-header>
   <div class="flex flex-col h-[calc(100dvh)]" *ngIf="!openReciept">
     <!-- <app-header *ngIf="pageNo == 1" /> -->
     <div
@@ -263,33 +264,7 @@
 
             <div class="flex justify-center gap-3">
               <div
-                *ngFor="let v of  [
-      {
-        additional_percentage_fee: 0,
-        base_fare: 30,
-        base_km_limit: 2,
-        created_at: '2023-01-05 18:34:30',
-        distance_fare: 16,
-        formatted_date: '05 Jan 2023',
-        id: 7,
-        in_order: 1,
-        is_active: 1,
-        max_seat: 1,
-        min_fare: 30,
-        mode: '',
-        name: 'Motor',
-        ordering: 4,
-        photo: 'http://localhost:8000/images/default.png',
-        pickup_km_limit: 1,
-        pickup_km_rate: 7,
-        pricing: null,
-        pricing_profile_id: null,
-        slug: 'motorcycle',
-        time_fare: 0,
-        updated_at: '2023-09-20 05:00:09',
-        zone_id: 6,
-      }
-    ]"
+                *ngFor="let v of vehiclesAvailable"
                 (click)="selectPautosVehicle(v)"
                 class="rounded-2xl bg-lime-green md:w-[200px] flex gap-2 p-2 md:flex-col justify-between items-center shadow-lg border-solid my-4"
                 [ngClass]="{
@@ -356,5 +331,9 @@
       </div>
     </div>
   </div>
-  <app-receipt *ngIf="openReciept"></app-receipt>
+  <app-receipt
+    *ngIf="openReciept"
+    [orderReceipt]="book_order_details"
+    [commissionNumber]="commission"
+  ></app-receipt>
 </div>
