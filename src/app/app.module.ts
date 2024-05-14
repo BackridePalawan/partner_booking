@@ -27,7 +27,10 @@ import { NavHeaderComponent } from './component/nav-header/nav-header.component'
 import { OrderDetailsComponent } from './order-details/order-details.component';
 import { DatePipe } from '@angular/common';
 import { EarningStatisticComponent } from './earning-statistic/earning-statistic.component';
-
+import { ChartModule } from 'primeng/chart';
+import { WeeklyStatisticComponent } from './earning-statistic/weekly-statistic/weekly-statistic.component';
+import { MonthlyStatisticComponent } from './earning-statistic/monthly-statistic/monthly-statistic.component';
+import { YearlyStatisticComponent } from './earning-statistic/yearly-statistic/yearly-statistic.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -45,6 +48,9 @@ import { EarningStatisticComponent } from './earning-statistic/earning-statistic
     NavHeaderComponent,
     OrderDetailsComponent,
     EarningStatisticComponent,
+    WeeklyStatisticComponent,
+    MonthlyStatisticComponent,
+    YearlyStatisticComponent,
   ],
   imports: [
     BrowserModule,
@@ -56,6 +62,7 @@ import { EarningStatisticComponent } from './earning-statistic/earning-statistic
     ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    ChartModule,
   ],
   providers: [provideClientHydration(), DatePipe],
   bootstrap: [AppComponent],

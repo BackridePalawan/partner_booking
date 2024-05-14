@@ -1,14 +1,45 @@
+<app-loading-component *ngIf="loadingpage"></app-loading-component>
 <app-sidebar></app-sidebar>
 <div class="md:ml-64">
   <app-nav-header [title]="title"></app-nav-header>
-  <div class="p-4 w-full flex justify-center items-center mt-[100px]">
-    <div date-rangepicker class="flex items-center">
+
+  <div
+    class="p-4 w-full flex flex-col gap-4 justify-center items-center mt-[100px]"
+  >
+    <p class="text-16 font-bold">Filter By:</p>
+    <div class="flex w-full px-4 justify-evenly items-center mx-2">
+      <a
+        class="px-4 py-2 bg-secondary text-white rounded-lg shadow-lg font-bold hover:bg-secondary"
+        routerLink="/affiliate/statistics"
+      >
+        Date
+      </a>
+      <a
+        class="px-4 py-2 bg-primary text-white rounded-lg shadow-lg font-bold hover:bg-secondary"
+        routerLink="/affiliate/statistics/weekly"
+      >
+        Weekly
+      </a>
+      <a
+        class="px-4 py-2 bg-primary text-white rounded-lg shadow-lg font-bold hover:bg-secondary"
+        routerLink="/affiliate/statistics/monthly"
+      >
+        Monthly
+      </a>
+      <a
+        class="px-4 py-2 bg-primary text-white rounded-lg shadow-lg font-bold hover:bg-secondary"
+      >
+        Yearly
+      </a>
+    </div>
+    <div class="flex items-center my-3">
       <div class="relative">
+        <div class="text-center">Date From:</div>
         <div
           class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
         >
           <svg
-            class="w-4 h-4 text-gray-500 dark:text-gray-400"
+            class="w-4 h-4 text-gray-500 dark:text-gray-400 mt-5"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="currentColor"
@@ -20,20 +51,22 @@
           </svg>
         </div>
         <input
-          (change)="getDateRange($event)"
+          (change)="getStartDate($event)"
+          [value]="startDate"
           name="start"
           type="date"
           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           placeholder="Select date start"
         />
       </div>
-      <span class="mx-4 text-gray-500">to</span>
+      <span class="mx-4 text-gray-500 mt-5">to</span>
       <div class="relative">
+        <div class="text-center">Date To:</div>
         <div
           class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
         >
           <svg
-            class="w-4 h-4 text-gray-500 dark:text-gray-400"
+            class="w-4 h-4 text-gray-500 dark:text-gray-400 mt-5"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="currentColor"
@@ -45,7 +78,8 @@
           </svg>
         </div>
         <input
-          (change)="getDateRange($event)"
+          (change)="getEndDate($event)"
+          [value]="endDate"
           name="end"
           type="date"
           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -54,226 +88,159 @@
       </div>
     </div>
   </div>
-
-  <div class="w-full px-3 py-4 shadow-lg rounded-lg">
-    <div class="relative overflow-x-auto shadow-md rounded-lg">
-      <div class="flex justify-end items-center gap-4">
-        <div
-          class="flex flex-column flex-row flex-wrap space-y-4 space-y-0 items-center justify-end"
-          *ngIf="displayedItems.length != 0 || !onsearch"
+  <div *ngIf="displayedItems.length != 0">
+    <div class="card mx-4 shadow-lg p-4">
+      <p-chart type="line" [data]="data" [options]="options" />
+    </div>
+    <div class="w-full px-3 py-4 shadow-lg rounded-lg">
+      <p class="text-center my-4 text-2xl">
+        ₱{{ total.toFixed(2) }} is the Total Earnings From
+        {{ datePipe.transform(startDate, "MMMM d, y") }} to
+        {{ datePipe.transform(endDate, "MMMM d, y") }}
+      </p>
+      <div class="relative overflow-x-auto shadow-md rounded-lg">
+        <table
+          class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
         >
-          <label for="table-search" class="sr-only">Search</label>
-          <div class="relative">
-            <div
-              *ngIf="loadingpage && onsearch"
-              class="absolute w-full h-full bg-gray-100 flex justify-center items-center rounded-lg"
+          <thead
+            class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+          >
+            <tr>
+              <th scope="col" class="px-6 py-3 text-center">Date</th>
+              <th scope="col" class="px-6 py-3 text-center">Total Earning</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="loadingpage">
+            <tr
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
             >
-              Loading...
-            </div>
-            <div
-              class="absolute inset-y-0 left-0 rtl:inset-r-0 rtl:right-0 flex items-center ps-3 pb-3pointer-events-none"
+              <td class="px-6 py-2 text-black font-bold text-16 text-center">
+                Loading .....
+              </td>
+              <td class="px-6 py-2 text-black font-bold text-16 text-center">
+                Loading .....
+              </td>
+              <td class="px-6 py-2 text-black font-bold text-16 text-center">
+                Loading .....
+              </td>
+            </tr>
+            <tr
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
             >
-              <svg
-                class="w-5 h-5 text-gray-500 dark:text-gray-400 mb-[12px]"
-                aria-hidden="true"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
+              <td class="px-6 py-2 text-black font-bold text-16 text-center">
+                Loading .....
+              </td>
+              <td class="px-6 py-2 text-black font-bold text-16 text-center">
+                Loading .....
+              </td>
+              <td class="px-6 py-2 text-black font-bold text-16 text-center">
+                Loading .....
+              </td>
+            </tr>
+            <tr
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+            >
+              <td class="px-6 py-2 text-black font-bold text-16 text-center">
+                Loading .....
+              </td>
+              <td class="px-6 py-2 text-black font-bold text-16 text-center">
+                Loading .....
+              </td>
+              <td class="px-6 py-2 text-black font-bold text-16 text-center">
+                Loading .....
+              </td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="!loadingpage">
+            <tr
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+              *ngFor="let item of displayedItems"
+            >
+              <td
+                class="px-6 py-2 text-black font-semibold text-16 text-center"
               >
-                <path
-                  fill-rule="evenodd"
-                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                  clip-rule="evenodd"
-                ></path>
-              </svg>
-            </div>
-            <input
-              type="text"
-              id="table-search"
-              class="block p-2 ps-10 mb-[13px] text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Search for items"
-            />
-            <!-- (keyup)="onSearch($event)" -->
-          </div>
+                {{ datePipe.transform(item.created_at, "MMMM d, y") }}
+              </td>
+              <td
+                class="px-6 py-2 text-black font-semibold text-16 text-center"
+              >
+                ₱{{ item.commission }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div
+          *ngIf="displayedItems.length == 0 && onsearch"
+          class="w-full shadow-lg rounded-lg flex justify-center items-center bg-white"
+        >
+          <p class="font-bold text-16" [class.text-white]="loadingpage">
+            NO {{ filtervalue.toUpperCase() }} ORDERS FOUND
+          </p>
+        </div>
+        <div
+          *ngIf="displayedItems.length == 0 && !onsearch"
+          class="w-full shadow-lg rounded-lg flex justify-center items-center bg-white"
+        >
+          <p class="font-bold text-16" [class.text-white]="loadingpage">
+            NO RESULTS OF "{{ rental_name }}"
+          </p>
         </div>
       </div>
-      <table
-        class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+      <nav
+        class="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4"
+        aria-label="Table navigation"
+        *ngIf="displayedItems.length != 0"
       >
-        <thead
-          class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+        <span
+          class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto"
+          >Showing
+          <span class="font-semibold text-gray-900 dark:text-white"
+            >{{ from }}-{{ to }}</span
+          >
+          of
+          <span class="font-semibold text-gray-900 dark:text-white">{{
+            totalItem
+          }}</span></span
         >
-          <tr>
-            <th scope="col" class="px-6 py-3 text-center">Order ID</th>
-            <th scope="col" class="px-6 py-3 text-center">Customer Name</th>
-            <th scope="col" class="px-6 py-3 text-center">Status</th>
-            <th scope="col" class="px-6 py-3 text-center">Order On</th>
-            <th scope="col" class="px-6 py-3 text-center">Total</th>
-            <th scope="col" class="px-6 py-3 text-center">Actions</th>
-          </tr>
-        </thead>
-        <tbody *ngIf="loadingpage">
-          <tr
-            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-          >
-            <td class="px-6 py-2 text-black font-bold text-16 text-center">
-              Loading .....
-            </td>
-            <td class="px-6 py-2 text-black font-bold text-16 text-center">
-              Loading .....
-            </td>
-            <td class="px-6 py-2 text-black font-bold text-16 text-center">
-              Loading .....
-            </td>
-            <td class="px-6 py-2 text-black font-bold text-16 text-center">
-              Loading .....
-            </td>
-            <td class="px-6 py-2 text-black font-bold text-16 text-center">
-              Loading .....
-            </td>
-            <td class="px-6 py-2 text-black font-bold text-16 text-center">
-              Loading .....
-            </td>
-          </tr>
-          <tr
-            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-          >
-            <td class="px-6 py-2 text-black font-bold text-16 text-center">
-              Loading .....
-            </td>
-            <td class="px-6 py-2 text-black font-bold text-16 text-center">
-              Loading .....
-            </td>
-            <td class="px-6 py-2 text-black font-bold text-16 text-center">
-              Loading .....
-            </td>
-            <td class="px-6 py-2 text-black font-bold text-16 text-center">
-              Loading .....
-            </td>
-            <td class="px-6 py-2 text-black font-bold text-16 text-center">
-              Loading .....
-            </td>
-            <td class="px-6 py-2 text-black font-bold text-16 text-center">
-              Loading .....
-            </td>
-          </tr>
-          <tr
-            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-          >
-            <td class="px-6 py-2 text-black font-bold text-16 text-center">
-              Loading .....
-            </td>
-            <td class="px-6 py-2 text-black font-bold text-16 text-center">
-              Loading .....
-            </td>
-            <td class="px-6 py-2 text-black font-bold text-16 text-center">
-              Loading .....
-            </td>
-            <td class="px-6 py-2 text-black font-bold text-16 text-center">
-              Loading .....
-            </td>
-            <td class="px-6 py-2 text-black font-bold text-16 text-center">
-              Loading .....
-            </td>
-            <td class="px-6 py-2 text-black font-bold text-16 text-center">
-              Loading .....
-            </td>
-          </tr>
-        </tbody>
-        <tbody *ngIf="!loadingpage">
-          <tr
-            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-            *ngFor="let item of displayedItems"
-          >
-            <td class="px-6 py-2 text-black font-bold text-16 text-center">
-              {{ item.id }}
-            </td>
-            <td class="px-6 py-2 text-black font-semibold text-16 text-center">
-              {{ item.taxi_order.passenger_full_name }}
-            </td>
-            <td class="px-6 py-2 text-black font-semibold text-16 text-center">
-              {{ item.status }}
-            </td>
-            <td class="px-6 py-2 text-black font-semibold text-16 text-center">
-              {{ datePipe.transform(item.created_at, "MMMM d, y, hh:mm:ss a") }}
-            </td>
-            <td class="px-6 py-2 text-black font-semibold text-16 text-center">
-              {{ item.total + item.affiliate_order.commission }}
-            </td>
+        <ul class="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
+          <li>
+            <a
+              (click)="prevChangePage()"
+              class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              >Prev</a
+            >
+          </li>
+          <li *ngFor="let item of totalItems">
+            <a
+              (click)="onPageChange(item.url, item.label)"
+              [class.active]="item.active"
+              class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              >{{ item.label }}</a
+            >
+          </li>
 
-            <td class="px-6 py-2 text-black font-semibold text-16 text-center">
-              <div class="flex justify-center">
-                <a
-                  [routerLink]="['/affiliate/book/details/', item.id]"
-                  target="_blank"
-                  class="px-2 py-2 bg-primary rounded-lg text-white hover:bg-secondary w-[50px]"
-                >
-                  <i class="fa-solid fa-eye"></i>
-                </a>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div
-        *ngIf="displayedItems.length == 0 && onsearch"
-        class="w-full shadow-lg rounded-lg flex justify-center items-center bg-white"
-      >
-        <p class="font-bold text-16" [class.text-white]="loadingpage">
-          NO {{ filtervalue.toUpperCase() }} ORDERS FOUND
-        </p>
-      </div>
-      <div
-        *ngIf="displayedItems.length == 0 && !onsearch"
-        class="w-full shadow-lg rounded-lg flex justify-center items-center bg-white"
-      >
-        <p class="font-bold text-16" [class.text-white]="loadingpage">
-          NO RESULTS OF "{{ rental_name }}"
-        </p>
-      </div>
+          <li>
+            <a
+              (click)="nextChangePage()"
+              class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              >Next</a
+            >
+          </li>
+        </ul>
+      </nav>
     </div>
-    <nav
-      class="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4"
-      aria-label="Table navigation"
-      *ngIf="displayedItems.length != 0"
-    >
-      <span
-        class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto"
-        >Showing
-        <span class="font-semibold text-gray-900 dark:text-white"
-          >{{ from }}-{{ to }}</span
-        >
-        of
-        <span class="font-semibold text-gray-900 dark:text-white">{{
-          totalItem
-        }}</span></span
-      >
-      <ul class="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
-        <li>
-          <a
-            (click)="prevChangePage()"
-            class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-            >Prev</a
-          >
-        </li>
-        <li *ngFor="let item of totalItems">
-          <a
-            (click)="onPageChange(item.url, item.label)"
-            [class.active]="item.active"
-            class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-            >{{ item.label }}</a
-          >
-        </li>
-
-        <li>
-          <a
-            (click)="nextChangePage()"
-            class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-            >Next</a
-          >
-        </li>
-      </ul>
-    </nav>
+  </div>
+  <div
+    *ngIf="displayedItems.length == 0"
+    class="flex w-full h-full justify-center items-center"
+  >
+    <div class="p-5 shadow-lg rounded-lg border-gray-300" *ngIf="!loadingpage">
+      <p class="font-bold text-2xl">
+        <i class="fa-regular fa-face-sad-tear"></i> No data from
+        {{ datePipe.transform(startDate, "MMMM d, y") }} to
+        {{ datePipe.transform(endDate, "MMMM d, y") }}
+      </p>
+    </div>
   </div>
 </div>

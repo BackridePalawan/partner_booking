@@ -1,14 +1,31 @@
-import { Component, OnInit } from '@angular/core';
-import { ApiServices } from '../services/api-services';
-import { HttpErrorResponse } from '@angular/common/http';
+import { Component } from '@angular/core';
+import { ApiServices } from '../../services/api-services';
 import { DatePipe } from '@angular/common';
-// import { ChartModule } from 'primeng/chart';
+import { HttpErrorResponse } from '@angular/common/http';
+
 @Component({
-  selector: 'app-earning-statistic',
-  templateUrl: './earning-statistic.component.html',
-  styleUrl: './earning-statistic.component.scss',
+  selector: 'app-weekly-statistic',
+  templateUrl: './weekly-statistic.component.html',
+  styleUrl: './weekly-statistic.component.scss',
 })
-export class EarningStatisticComponent implements OnInit {
+export class WeeklyStatisticComponent {
+  months: any = {
+    '1': 'January',
+    '2': 'February',
+    '3': 'March',
+    '4': 'April',
+    '5': 'May',
+    '6': 'June',
+    '7': 'July',
+    '8': 'August',
+    '9': 'September',
+    '10': 'October',
+    '11': 'November',
+    '12': 'December',
+  };
+
+  years: number[] = [];
+
   total: number = 0;
   // chart
   data: any;
@@ -31,51 +48,64 @@ export class EarningStatisticComponent implements OnInit {
   totalItems: any = [];
   displayedItems: any[] = [];
   selectedDate: string;
-  startDate: string;
-  endDate: string;
-
+  selectedMonth: string;
+  selectedYear: string;
+  weeks: any;
   currentDate: string;
 
   constructor(private apiService: ApiServices, public datePipe: DatePipe) {
-    const today = new Date();
-    // Format the current date to 'yyyy-MM-dd'
-    this.currentDate = this.datePipe.transform(today, 'yyyy-MM-dd') ?? '';
-
-    // Get the date 3 days ago
-    const threeDaysAgoDate = new Date(today);
-    threeDaysAgoDate.setDate(today.getDate() - 3);
-    this.startDate =
-      this.datePipe.transform(threeDaysAgoDate, 'yyyy-MM-dd') ?? '';
-
-    // Get the date 3 days ahead
-    const threeDaysAheadDate = new Date(today);
-    threeDaysAheadDate.setDate(today.getDate() + 3);
-    this.endDate =
-      this.datePipe.transform(threeDaysAheadDate, 'yyyy-MM-dd') ?? '';
+    //
+    //
   }
   ngOnInit(): void {
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1;
+    this.selectedYear = currentYear.toString();
+    this.selectedMonth = currentMonth.toString();
+    console.log('your month is = ' + currentMonth.toString());
+    console.log('your year is = ' + currentYear.toString());
+    const startYear = currentYear - 10; // Adjust the range as needed
+    const endYear = currentYear + 10;
+    for (let year = startYear - 10; year <= endYear; year++) {
+      this.years.push(year);
+    }
     // Get the current date
     // Initialize with current date
-    // this.getWeeksInMonth(2024, 12);
+    this.weeks = this.getWeeksInMonth(
+      parseFloat(this.selectedYear),
+      parseFloat(this.selectedMonth)
+    );
+
+    // console.log('this is the ' + this.weeks);
     // this.getEarningsOrders(this.currentPage);
     this.getEarnings(this.currentPage);
-    console.log([this.startDate, this.endDate]);
+    // console.log([this.startDate, this.endDate]);
   }
 
-  getStartDate(event: Event) {
+  monthChange(event: Event) {
     const inputElement = event.target as HTMLInputElement;
     console.log(inputElement.value);
-    this.startDate = inputElement.value;
-    this.endDate = inputElement.value;
-  }
-
-  getEndDate(event: Event) {
-    const inputElement = event.target as HTMLInputElement;
-    console.log(inputElement.value);
-    this.endDate = inputElement.value;
-
+    this.selectedMonth = inputElement.value;
+    this.weeks = this.getWeeksInMonth(
+      parseFloat(this.selectedYear),
+      parseFloat(this.selectedMonth)
+    );
+    this.getEarningsOrders(this.currentPage);
     this.getEarnings(this.currentPage);
-    // this.getEarningsOrders(this.currentPage);
+
+    console.log(this.weeks);
+  }
+
+  yearChange(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+    console.log(inputElement.value);
+    this.selectedYear = inputElement.value;
+    this.weeks = this.getWeeksInMonth(
+      parseFloat(this.selectedYear),
+      parseFloat(this.selectedMonth)
+    );
+    this.getEarningsOrders(this.currentPage);
+    this.getEarnings(this.currentPage);
   }
 
   getEarningsOrders(page: string) {
@@ -84,7 +114,10 @@ export class EarningStatisticComponent implements OnInit {
       var token: any = localStorage.getItem('token');
       this.apiService
         .getEarningsOrders(
-          { startDate: this.startDate, endDate: this.endDate },
+          {
+            startDate: this.weeks[0].start,
+            endDate: this.weeks[this.weeks.length - 1].end,
+          },
           page
         )
         .subscribe({
@@ -114,8 +147,8 @@ export class EarningStatisticComponent implements OnInit {
 
   onPageChange(startIndex: string, page: string) {
     console.log(startIndex);
-    this.getEarnings(page);
-    // console.log(this.currentPage);
+    this.getEarningsOrders(page);
+    console.log(this.currentPage);
   }
 
   nextChangePage() {
@@ -123,7 +156,7 @@ export class EarningStatisticComponent implements OnInit {
       return;
     }
     // console.log(this.nextPage.split('=')[1]);
-    this.getEarnings(this.nextPage.split('=')[1]);
+    this.getEarningsOrders(this.nextPage.split('=')[1]);
   }
 
   prevChangePage() {
@@ -131,7 +164,7 @@ export class EarningStatisticComponent implements OnInit {
       return;
     }
     // console.log(this.nextPage.split('=')[1]);
-    this.getEarnings(this.prevPage.split('=')[1]);
+    this.getEarningsOrders(this.prevPage.split('=')[1]);
   }
 
   getWeeksInMonth(
@@ -165,11 +198,11 @@ export class EarningStatisticComponent implements OnInit {
 
       weeks.push({
         start: `${currentWeekStart.getFullYear()}/${this.formatNumber(
-          currentWeekStart.getDate()
-        )}/${this.formatNumber(currentWeekStart.getMonth() + 1)}`,
+          currentWeekStart.getMonth() + 1
+        )}/${this.formatNumber(currentWeekStart.getDate())}`,
         end: `${currentWeekEnd.getFullYear()}/${this.formatNumber(
-          currentWeekEnd.getDate()
-        )}/${this.formatNumber(currentWeekEnd.getMonth() + 1)}`,
+          currentWeekEnd.getMonth() + 1
+        )}/${this.formatNumber(currentWeekEnd.getDate())}`,
         days: [...currentWeekDays],
       });
 
@@ -189,31 +222,36 @@ export class EarningStatisticComponent implements OnInit {
     if (typeof localStorage !== 'undefined') {
       var token: any = localStorage.getItem('token');
       this.apiService
-        .getEarnings({ startDate: this.startDate, endDate: this.endDate }, page)
+        .getEarningsWeekly(
+          {
+            startDate: this.weeks[0].start,
+            endDate: this.weeks[this.weeks.length - 1].end,
+          },
+          page
+        )
         .subscribe({
           next: (res: any) => {
             console.log(res);
             // console.log(res['total']);
-            this.displayedItems = res['data']['data'];
-            this.from = res['data']['from'] ?? '';
-            this.to = res['data']['to'] ?? '';
-            this.totalItem = res['data']['total'] ?? '';
-            this.totalItems =
-              res['data']['links'].length !== 0
-                ? res['data']['links'].slice(1, -1)
-                : [];
+            this.displayedItems = res['data'];
+            // this.from = res['from'] ?? '';
+            // this.to = res['to'] ?? '';
+            // this.totalItem = res['total'] ?? '';
+            // this.totalItems =
+            //   res['links'].length !== 0 ? res['links'].slice(1, -1) : [];
             // console.log(this.displayedItems);
-            this.nextPage =
-              res['data']['next_page_url'] != null
-                ? res['data']['next_page_url']
-                : '';
-            this.prevPage =
-              res['data']['prev_page_url'] != null
-                ? res['data']['prev_page_url']
-                : '';
-            this.total = res['total_commission'];
+            // this.nextPage =
+            //   res['next_page_url'] != null ? res['next_page_url'] : '';
+            // this.prevPage =
+            //   res['prev_page_url'] != null ? res['prev_page_url'] : '';
+            this.total = this.displayedItems
+              .reduce((sum, order) => sum + order.commission, 0)
+              .toFixed(2);
+
+            console.log(this.total);
+
             this.loadingpage = false;
-            this.openChart(res['data']['data']);
+            this.openChart(res['data']);
           },
           error: (error: HttpErrorResponse) => {
             console.log(error.error.message);
@@ -224,11 +262,6 @@ export class EarningStatisticComponent implements OnInit {
   }
 
   openChart(data: any) {
-    console.log(
-      data.map((ele: { created_at: any }) =>
-        this.datePipe.transform(ele.created_at, 'MMMM d, y')
-      )
-    );
     const documentStyle = getComputedStyle(document.documentElement);
     // const textColor = documentStyle.getPropertyValue('--text-color');
     const textColorSecondary = documentStyle.getPropertyValue(
@@ -237,12 +270,16 @@ export class EarningStatisticComponent implements OnInit {
     // const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
     this.data = {
-      labels: data.map((ele: { created_at: any }) =>
-        this.datePipe.transform(ele.created_at, 'MMMM d, y')
+      labels: data.map(
+        (ele: { week_start: any; week_end: any }) =>
+          `${this.datePipe.transform(
+            ele.week_start,
+            'MMMM d, y'
+          )} to ${this.datePipe.transform(ele.week_end, 'MMMM d, y')}`
       ),
       datasets: [
         {
-          label: `Earnings From ${this.startDate} to ${this.endDate}`,
+          label: `Earnings From`,
           data: data.map((ele: { commission: any }) => ele.commission),
           fill: true,
           tension: 0.4,

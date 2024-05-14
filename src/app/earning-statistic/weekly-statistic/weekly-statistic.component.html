@@ -1,0 +1,176 @@
+<app-loading-component *ngIf="loadingpage"></app-loading-component>
+<app-sidebar></app-sidebar>
+<div class="md:ml-64">
+  <app-nav-header [title]="title"></app-nav-header>
+  <div
+    class="p-4 w-full flex flex-col gap-4 justify-center items-center mt-[100px]"
+  >
+    <p class="text-16 font-bold">Filter By:</p>
+    <div class="flex w-full px-4 justify-evenly items-center mx-2">
+      <a
+        class="px-4 py-2 bg-primary text-white rounded-lg shadow-lg font-bold hover:bg-secondary"
+        routerLink="/affiliate/statistics"
+      >
+        Date
+      </a>
+      <a
+        class="px-4 py-2 bg-secondary text-white rounded-lg shadow-lg font-bold hover:bg-secondary"
+        routerLink="/affiliate/statistics/weekly"
+      >
+        Weekly
+      </a>
+      <a
+        routerLink="/affiliate/statistics/monthly"
+        class="px-4 py-2 bg-primary text-white rounded-lg shadow-lg font-bold hover:bg-secondary"
+      >
+        Monthly
+      </a>
+      <a
+        routerLink="/affiliate/statistics/yearly"
+        class="px-4 py-2 bg-primary text-white rounded-lg shadow-lg font-bold hover:bg-secondary"
+      >
+        Yearly
+      </a>
+    </div>
+    <div class="flex items-center my-3">
+      <select
+        name=""
+        id=""
+        (change)="monthChange($event)"
+        class="rounded-lg shadow-lg mx-3"
+        [value]="selectedMonth"
+      >
+        <option value="1">January</option>
+        <option value="2">Febuary</option>
+        <option value="3">March</option>
+        <option value="4">April</option>
+        <option value="5">May</option>
+        <option value="6">June</option>
+        <option value="7">July</option>
+        <option value="8">August</option>
+        <option value="9">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+      </select>
+
+      <select
+        name=""
+        id=""
+        (change)="yearChange($event)"
+        class="rounded-lg shadow-lg mx-3"
+        [value]="selectedYear"
+      >
+        <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+      </select>
+    </div>
+  </div>
+  <div *ngIf="total != 0">
+    <div class="card mx-4 shadow-lg p-4">
+      <p-chart type="line" [data]="data" [options]="options" />
+    </div>
+    <div class="w-full px-3 py-4 shadow-lg rounded-lg">
+      <!-- <p class="text-center my-4 text-2xl">
+      Earnings From {{ datePipe.transform(startDate, "MMMM d, y") }} to
+      {{ datePipe.transform(endDate, "MMMM d, y") }}
+    </p> -->
+      <div class="relative overflow-x-auto shadow-md rounded-lg">
+        <table
+          class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+        >
+          <thead
+            class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+          >
+            <tr>
+              <th scope="col" class="px-6 py-3 text-center">Weeks</th>
+              <th scope="col" class="px-6 py-3 text-center">Earnings Total</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="loadingpage">
+            <tr
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+            >
+              <td class="px-6 py-2 text-black font-bold text-16 text-center">
+                Loading .....
+              </td>
+              <td class="px-6 py-2 text-black font-bold text-16 text-center">
+                Loading .....
+              </td>
+              <td class="px-6 py-2 text-black font-bold text-16 text-center">
+                Loading .....
+              </td>
+            </tr>
+            <tr
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+            >
+              <td class="px-6 py-2 text-black font-bold text-16 text-center">
+                Loading .....
+              </td>
+              <td class="px-6 py-2 text-black font-bold text-16 text-center">
+                Loading .....
+              </td>
+              <td class="px-6 py-2 text-black font-bold text-16 text-center">
+                Loading .....
+              </td>
+            </tr>
+            <tr
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+            >
+              <td class="px-6 py-2 text-black font-bold text-16 text-center">
+                Loading .....
+              </td>
+              <td class="px-6 py-2 text-black font-bold text-16 text-center">
+                Loading .....
+              </td>
+              <td class="px-6 py-2 text-black font-bold text-16 text-center">
+                Loading .....
+              </td>
+            </tr>
+          </tbody>
+
+          <tbody *ngIf="!loadingpage">
+            <tr
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+              *ngFor="let item of displayedItems"
+            >
+              <td class="px-6 py-2 text-black font-bold text-16 text-center">
+                {{ datePipe.transform(item.week_start, "MMMM d, y") }}
+                to
+                {{ datePipe.transform(item.week_end, "MMMM d, y") }}
+              </td>
+
+              <td
+                class="px-6 py-2 text-black font-semibold text-16 text-center"
+              >
+                ₱{{ item.commission }}
+              </td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+            >
+              <td class="px-6 py-2 text-black font-bold text-2xl text-center">
+                Total :
+              </td>
+              <td class="px-6 py-2 text-black font-bold text-2xl text-center">
+                ₱{{ total }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div
+    *ngIf="total == 0"
+    class="flex w-full h-full justify-center items-center"
+  >
+    <div class="p-5 shadow-lg rounded-lg border-gray-300" *ngIf="!loadingpage">
+      <p class="font-bold text-2xl">
+        <i class="fa-regular fa-face-sad-tear"></i> No data in
+        {{ months[selectedMonth] }}, {{ selectedYear }}
+      </p>
+    </div>
+  </div>
+</div>

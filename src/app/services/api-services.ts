@@ -160,4 +160,41 @@ export class ApiServices {
       }
     );
   }
+  getEarningsWeekly(data: any, page: string) {
+    return this.http.post(
+      `${this.Root_URL_API}affiliate/earnings/weekly?page=${page}`,
+      data,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+  getEarningsMonthly(data: any, page: string) {
+    return this.http.post(
+      `${this.Root_URL_API}affiliate/earnings/monthly?page=${page}`,
+      data,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+  getEarningsYearly(data: any, page: string) {
+    return this.http.post(
+      `${this.Root_URL_API}affiliate/earnings/yearly?page=${page}`,
+      data,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  getEarningsOrders(data: any, page: string) {
+    return this.http.post(
+      `${this.Root_URL_API}affiliate/earnings/orders?page=${page}`,
+      data,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
 }
