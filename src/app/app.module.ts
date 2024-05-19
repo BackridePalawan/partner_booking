@@ -31,6 +31,8 @@ import { ChartModule } from 'primeng/chart';
 import { WeeklyStatisticComponent } from './earning-statistic/weekly-statistic/weekly-statistic.component';
 import { MonthlyStatisticComponent } from './earning-statistic/monthly-statistic/monthly-statistic.component';
 import { YearlyStatisticComponent } from './earning-statistic/yearly-statistic/yearly-statistic.component';
+import { ConnectingToDriverComponent } from './component/connecting-to-driver/connecting-to-driver.component';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 @NgModule({
   declarations: [
     AppComponent,
@@ -51,6 +53,7 @@ import { YearlyStatisticComponent } from './earning-statistic/yearly-statistic/y
     WeeklyStatisticComponent,
     MonthlyStatisticComponent,
     YearlyStatisticComponent,
+    ConnectingToDriverComponent,
   ],
   imports: [
     BrowserModule,
@@ -63,6 +66,7 @@ import { YearlyStatisticComponent } from './earning-statistic/yearly-statistic/y
     HttpClientModule,
     BrowserAnimationsModule,
     ChartModule,
+    SweetAlert2Module.forRoot(),
   ],
   providers: [provideClientHydration(), DatePipe],
   bootstrap: [AppComponent],

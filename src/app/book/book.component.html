@@ -1,8 +1,9 @@
 <app-loading-component *ngIf="loadingPage"></app-loading-component>
-<app-driver-search
-  *ngIf="driverSearchPage"
-  [inputData]="connectingMessage"
-></app-driver-search>
+<app-driver-search *ngIf="driverSearchPage"></app-driver-search>
+<app-connecting-to-driver
+  *ngIf="connectingToDriver"
+  [driverDetails]="driverDetails"
+></app-connecting-to-driver>
 
 <app-sidebar></app-sidebar>
 <div class="md:ml-64">

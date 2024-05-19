@@ -16,6 +16,7 @@ module.exports = {
         "primary-dark": "#4c6c33",
         secondary: "#1f3f56",
         link: "#418fde",
+        red: "#cb2e2b",
       },
       fontSize: {
         12: "12px",

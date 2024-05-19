@@ -32,9 +32,20 @@
           >
             <div class="spinner"></div>
           </div>
+
+          <div
+            class="w-[100px] h-[100px] bg-primary shadow-lg rounded-lg flex justify-center items-center"
+            *ngIf="
+              orderDetail.taxi_order.passenger_photo === '' && !loadingPage
+            "
+          >
+            <i class="fa-solid fa-user text-[70px] text-white"></i>
+          </div>
           <img
-            *ngIf="!loadingPage"
-            [src]="orderDetail.driver.photo"
+            *ngIf="
+              orderDetail.taxi_order.passenger_photo !== '' && !loadingPage
+            "
+            [src]="orderDetail.taxi_order.passenger_photo"
             alt="driver_photo"
             class="w-[100px] h-[100px] bg-secondary shadow-lg rounded-lg"
           />

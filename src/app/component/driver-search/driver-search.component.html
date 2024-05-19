@@ -2,10 +2,15 @@
   class="absolute bg-[#3c3c3c80] h-full w-full z-10 flex flex-col justify-center items-center"
 >
   <div class="flex justify-center items-center">
-    <p-progressSpinner ariaLabel="loading"></p-progressSpinner>
-    <i
-      class="fa-solid fa-magnifying-glass absolute text-16 font-bold text-white"
-    ></i>
+    <div
+      class="h-[500px] w-[500px] search absolute overflow-hidden shadow-lg rounded-lg"
+    >
+      <div class="hole"></div>
+
+      <!-- <p-progressSpinner ariaLabel="loading"></p-progressSpinner>
+      <i
+        class="fa-solid fa-magnifying-glass absolute text-16 font-bold text-white"
+      ></i> -->
+    </div>
   </div>
-  <p class="text-16 font-semibold">{{ inputData }}</p>
 </div>

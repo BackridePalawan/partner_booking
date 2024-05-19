@@ -1,0 +1,41 @@
+<div
+  class="absolute bg-[#3c3c3c80] h-full w-full z-10 flex flex-col justify-center items-center"
+>
+  <div class="flex justify-center items-center">
+    <div
+      class="h-[500px] w-[500px] absolute overflow-hidden shadow-lg rounded-lg bg-white"
+    >
+      <div class="flex justify-center items-center py-3">
+        <img
+          [src]="driverDetails.available_driver.photo"
+          alt=""
+          class="w-[200px] h-[200px] bg-[gray] rounded-lg shadow-lg"
+        />
+      </div>
+      <div class="flex flex-col justify-start gap-4 px-10 py-4">
+        <p class="text-16 font-semibold">
+          Driver Name:
+          <span class="font-bold">{{
+            driverDetails.available_driver.name
+          }}</span>
+        </p>
+        <p class="text-16 font-semibold">
+          Driver Phone Number:
+          <span class="font-bold">{{
+            driverDetails.available_driver.phone
+          }}</span>
+        </p>
+      </div>
+      <div class="flex flex-col justify-start gap-4 px-10 py-4">
+        <p
+          class="text-16 font-semibold px-4 py-2 text-center bg-gray-100 flex items-center justify-center"
+        >
+          <i
+            class="fa-solid fa-spinner fa-flip-vertical font-bold text-[25px] mr-4 text-primary rotate"
+          ></i>
+          Connecting to Driver...
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

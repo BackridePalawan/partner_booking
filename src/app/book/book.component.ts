@@ -23,6 +23,7 @@ export class BookComponent implements OnInit {
   book_order_details: any;
   loadingPage: boolean = true;
   driverSearchPage: boolean = false;
+  connectingToDriver: boolean = false;
   openReciept: boolean = false;
   connectingMessage: string = 'Searching For Driver';
   driverDetails: any;
@@ -260,7 +261,7 @@ export class BookComponent implements OnInit {
             total: this.driverDetails.total,
           };
           console.log(details);
-
+          this.driverSearchPage = false;
           this.bookOrder(details);
         },
         error: (error: HttpErrorResponse) => {
@@ -340,6 +341,7 @@ export class BookComponent implements OnInit {
   }
 
   bookOrder(details: any) {
+    this.connectingToDriver = true;
     this.api.booking(details).subscribe({
       next: (res: any) => {
         console.log(res);
@@ -393,7 +395,7 @@ export class BookComponent implements OnInit {
       .subscribe({
         next: (res) => {
           this.openReciept = true;
-          this.driverSearchPage = false;
+          this.connectingToDriver = false;
         },
         error: (error: HttpErrorResponse) => {
           console.log(error);
@@ -413,7 +415,6 @@ export class BookComponent implements OnInit {
   }
 
   startPolling(): void {
-    this.connectingMessage = 'Connecting to the Driver';
     // Use timer to emit values at a fixed interval
     this.pollingSubscription = timer(0, 5000)
       .pipe(switchMap(() => this.api.getOrderDetails(this.bookorder.order.id)))
@@ -421,7 +422,7 @@ export class BookComponent implements OnInit {
         next: (res: any) => {
           console.log(res);
           this.book_order_details = res;
-          if (res.status !== 'pending') {
+          if (res.driver) {
             this.addAffiliateOrder();
             // If the status is not 'pending', stop polling
             this.stopPolling();

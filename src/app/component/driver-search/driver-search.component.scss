@@ -1,0 +1,81 @@
+.search {
+  background-image: url(https://www.shutterstock.com/image-vector/green-silhouette-palawan-island-map-260nw-1928986082.jpg);
+  background-size: cover;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  position: relative;
+  &::before {
+    content: "";
+  }
+  &::after {
+    content: "Searching For Driver ....";
+    text-align: center;
+    font-size: larger;
+    font-weight: 500;
+    display: block;
+    position: relative;
+    animation: textanimate 2s infinite;
+  }
+}
+
+@keyframes textanimate {
+  0% {
+    content: "Searching For Driver ....";
+  }
+  25% {
+    content: "Searching";
+  }
+  50% {
+    content: "Searching For ";
+  }
+  75% {
+    content: "Searching For Driver";
+  }
+  100% {
+    content: "Searching For Driver ....";
+  }
+}
+
+.hole {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border: 5px solid black;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  box-shadow: 0 0 0 99999px rgb(255, 255, 255);
+  animation: diagonalMove 5s infinite;
+  //   transform: translate(-36%, -82%);
+}
+
+@keyframes diagonalMove {
+  0% {
+    transform: translate(23%, -185%);
+  }
+  25% {
+    transform: translate(-36%, -82%);
+  }
+  50% {
+    transform: translate(-106%, -1%);
+  }
+  75% {
+    transform: translate(-171%, 53%);
+  }
+  100% {
+    transform: translate(23%, -185%);
+  }
+}
+
+.rotate {
+  animation: rotate 4s linear infinite;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

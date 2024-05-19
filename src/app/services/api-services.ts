@@ -197,4 +197,48 @@ export class ApiServices {
       }
     );
   }
+
+  cancelBooking(orderID: string, reason: string) {
+    return this.http.get(
+      `${this.Root_URL_API}taxi/order/cancel/${orderID}?reason=${reason}`,
+
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  async getBooking(idCode: string) {
+    return new Promise((resolve, reject) => {
+      fetch(this.baseUrl + `booking/${idCode}`, {
+        headers: { ...this.getHeaders() },
+      })
+        .then((res) => res.json())
+        .then((u) => {
+          resolve(u);
+        })
+        .catch((err) => {
+          reject(err.message);
+        });
+    });
+  }
+
+  async getPolyline(origin: string, destination: string) {
+    console.log(origin, destination);
+    return new Promise((resolve, reject) => {
+      fetch(
+        this.baseUrl + `polylines?origin=${origin}&destination=${destination}`,
+        {
+          headers: { ...this.getHeaders() },
+        }
+      )
+        .then((res) => res.json())
+        .then((u) => {
+          resolve(u);
+        })
+        .catch((err) => {
+          reject(err.message);
+        });
+    });
+  }
 }
