@@ -11,6 +11,8 @@ import { EarningStatisticComponent } from './earning-statistic/earning-statistic
 import { WeeklyStatisticComponent } from './earning-statistic/weekly-statistic/weekly-statistic.component';
 import { MonthlyStatisticComponent } from './earning-statistic/monthly-statistic/monthly-statistic.component';
 import { YearlyStatisticComponent } from './earning-statistic/yearly-statistic/yearly-statistic.component';
+import { ViewBookingComponent } from './view-booking/view-booking.component';
+import { NotificationsComponent } from './notifications/notifications.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -27,8 +29,10 @@ const routes: Routes = [
       { path: 'statistics/yearly', component: YearlyStatisticComponent },
       { path: 'book/customer', component: BookComponent },
       { path: 'book/details/:orderId', component: OrderDetailsComponent },
+      { path: 'notifications', component: NotificationsComponent },
       { path: 'customers/:status', component: BookedCustomerComponent },
       { path: 'customers', component: BookedCustomerComponent },
+      { path: 'viewbooking/:code', component: ViewBookingComponent },
       { path: '', component: DashboardComponent },
     ],
   },

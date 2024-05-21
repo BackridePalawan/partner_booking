@@ -1,0 +1,62 @@
+<app-sidebar></app-sidebar>
+
+<div class="md:ml-64">
+  <app-nav-header [title]="title"></app-nav-header>
+  <div class="w-full h-screen flex justify-center items-start mt-[90px]">
+    <div class="w-[700px] shadow-lg rounded-2xl p-3 border-black bg-secondary">
+      <div class="w-full py-3 flex justify-end items-center gap-4">
+        <p
+          class="py-2 px-3 bg-primary text-white rounded-lg shadow-lg"
+          [class.bg-[#4b84ae]]="filterSelect === 1"
+          (click)="filterSelect = 1"
+        >
+          All
+        </p>
+        <p
+          class="py-2 px-3 bg-primary text-white rounded-lg shadow-lg"
+          [class.bg-[#4b84ae]]="filterSelect === 2"
+          (click)="filterSelect = 2"
+        >
+          Read
+        </p>
+        <p
+          class="py-2 px-3 bg-primary text-white rounded-lg shadow-lg"
+          [class.bg-[#4b84ae]]="filterSelect === 3"
+          (click)="filterSelect = 3"
+        >
+          Unread
+        </p>
+      </div>
+
+      <div
+        *ngFor="let notif of data"
+        class="w-full px-4 py-2 shadow-lg rounded-2xl flex justify-between items-center bg-white mb-4"
+      >
+        <div class="flex flex-col justify-evenly items-start">
+          <p>{{ notif.title }}</p>
+          <p class="text-12">
+            {{ datePipe.transform(notif.created_at, "MMMM d, y, hh:mm:ss a") }}
+          </p>
+        </div>
+        <div class="flex justify-evenly items-center gap-4">
+          <div
+            class="wrapper"
+            [class.wrapperOpen]="notif.is_read != 0"
+            (click)="openMessage(notif)"
+          >
+            <div class="lid one"></div>
+            <div class="lid two"></div>
+            <div class="envelope"></div>
+            <div class="letter"></div>
+          </div>
+          <span class="trash">
+            <span></span>
+            <i></i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <swal #swal> </swal>
+</div>

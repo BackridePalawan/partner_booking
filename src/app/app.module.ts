@@ -33,6 +33,9 @@ import { MonthlyStatisticComponent } from './earning-statistic/monthly-statistic
 import { YearlyStatisticComponent } from './earning-statistic/yearly-statistic/yearly-statistic.component';
 import { ConnectingToDriverComponent } from './component/connecting-to-driver/connecting-to-driver.component';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { ViewBookingComponent } from './view-booking/view-booking.component';
+import { CancelBookingComponent } from './component/cancel-booking/cancel-booking.component';
+import { NotificationsComponent } from './notifications/notifications.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -54,6 +57,9 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
     MonthlyStatisticComponent,
     YearlyStatisticComponent,
     ConnectingToDriverComponent,
+    ViewBookingComponent,
+    CancelBookingComponent,
+    NotificationsComponent,
   ],
   imports: [
     BrowserModule,

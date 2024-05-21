@@ -3,6 +3,7 @@ import { ApiServices } from '../services/api-services';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,6 +11,10 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent implements OnInit {
+  isPopupOpen: boolean = false;
+  cancelClick: number = 0;
+
+  cantBeCancel = ['enroute', 'failed', 'cancelled', 'delivered'];
   title: string = 'Dashboard';
   userDetail: any;
   data: any;
@@ -41,6 +46,7 @@ export class DashboardComponent implements OnInit {
   todays_earnings: any = 0;
   chartdata: any[] = [];
   earningsFrom: string = '';
+  reason: string = '';
 
   constructor(
     private apiService: ApiServices,
@@ -72,6 +78,10 @@ export class DashboardComponent implements OnInit {
     this.getCurrentOrder(this.currentPage);
 
     this.getChartDaily();
+  }
+
+  openPopup() {
+    this.isPopupOpen = true;
   }
 
   getCurrentOrder(page: string) {
@@ -245,5 +255,40 @@ export class DashboardComponent implements OnInit {
           this.loadingpage = false;
         },
       });
+  }
+
+  pickReason(clickNumber: number, reason: string) {
+    this.cancelClick = clickNumber;
+    this.reason = reason;
+  }
+
+  closeModal() {
+    this.isPopupOpen = false;
+    this.cancelClick = 0;
+    this.reason = '';
+  }
+
+  cancel() {
+    if (this.cancelClick == 0) {
+      Swal.fire({
+        title: 'Please Select A Reason',
+        icon: 'info',
+      });
+      return;
+    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Proceed',
+      cancelButtonText: 'Back',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // this.apiService.cancelBooking({})
+      }
+    });
   }
 }

@@ -12,7 +12,7 @@ export class ApiServices {
 
   getTokenHeader(): HttpHeaders {
     const token: any = localStorage.getItem('token');
-    console.log('this is the token:' + token);
+    // console.log('this is the token:' + token);
     return new HttpHeaders().set('Authorization', `Bearer ${token}`);
   }
 
@@ -208,9 +208,29 @@ export class ApiServices {
     );
   }
 
+  getNotification() {
+    return this.http.get(
+      `${this.Root_URL_API}affiliate/notifications`,
+
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  getUnreadNotification() {
+    return this.http.get(
+      `${this.Root_URL_API}affiliate/unread-notifications`,
+
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
   async getBooking(idCode: string) {
     return new Promise((resolve, reject) => {
-      fetch(this.baseUrl + `booking/${idCode}`, {
+      fetch(this.Root_URL_API + `booking/${idCode}`, {
         headers: { ...this.getHeaders() },
       })
         .then((res) => res.json())

@@ -202,14 +202,24 @@
                 <td
                   class="px-6 py-2 text-black font-semibold text-16 text-center"
                 >
-                  <div class="flex justify-center">
+                  <div class="flex justify-center gap-4 items-center">
                     <a
-                      [routerLink]="['/affiliate/book/details/', item.id]"
+                      [routerLink]="[
+                        '/affiliate/viewbooking/',
+                        item.id + '-' + item.code
+                      ]"
                       target="_blank"
                       class="px-2 py-2 bg-primary rounded-lg text-white hover:bg-secondary w-[50px]"
                     >
                       <i class="fa-solid fa-eye"></i>
                     </a>
+                    <p
+                      (click)="openPopup()"
+                      class="px-2 py-2 bg-red rounded-lg text-white hover:bg-secondary w-[50px]"
+                      *ngIf="!cantBeCancel.includes(item.status)"
+                    >
+                      <i class="fa-solid fa-xmark"></i>
+                    </p>
                   </div>
                 </td>
               </tr>
@@ -284,4 +294,47 @@
       </div>
     </div>
   </div>
+
+  <app-cancel-booking *ngIf="isPopupOpen">
+    <div class="w-full flex justify-end mr-4 px-4 border-b border-black">
+      <i class="fa-solid fa-xmark text-2xl text-red" (click)="closeModal()"></i>
+    </div>
+    <h2 class="my-2 text-center font-bold">
+      What’s the reason for canceling this book?
+    </h2>
+    <div class="flex justify-evenly items-center">
+      <p
+        class="px-4 py-3 shadow-lg rounded-2xl border-black"
+        [class.bg-secondary]="cancelClick === 1"
+        [class.text-white]="cancelClick === 1"
+        (click)="pickReason(1, 'Payment method')"
+      >
+        Payment method
+      </p>
+      <p
+        class="px-4 py-3 shadow-lg rounded-2xl border-black"
+        [class.bg-secondary]="cancelClick === 2"
+        [class.text-white]="cancelClick === 2"
+        (click)="pickReason(2, 'Pickup point')"
+      >
+        Pickup point
+      </p>
+      <p
+        class="px-4 py-3 shadow-lg rounded-2xl border-black"
+        [class.bg-secondary]="cancelClick === 3"
+        [class.text-white]="cancelClick === 3"
+        (click)="pickReason(3, 'Driver is too far')"
+      >
+        Driver is too far
+      </p>
+    </div>
+    <div class="flex justify-center items-center my-3">
+      <p
+        class="px-4 py-3 bg-primary text-white hover:bg-red shadow-highlight rounded-lg"
+        (click)="cancel()"
+      >
+        Cancel
+      </p>
+    </div>
+  </app-cancel-booking>
 </div>
