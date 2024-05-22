@@ -160,6 +160,7 @@ export class ApiServices {
       }
     );
   }
+
   getEarningsWeekly(data: any, page: string) {
     return this.http.post(
       `${this.Root_URL_API}affiliate/earnings/weekly?page=${page}`,
@@ -169,6 +170,7 @@ export class ApiServices {
       }
     );
   }
+
   getEarningsMonthly(data: any, page: string) {
     return this.http.post(
       `${this.Root_URL_API}affiliate/earnings/monthly?page=${page}`,
@@ -178,6 +180,7 @@ export class ApiServices {
       }
     );
   }
+
   getEarningsYearly(data: any, page: string) {
     return this.http.post(
       `${this.Root_URL_API}affiliate/earnings/yearly?page=${page}`,
@@ -259,6 +262,31 @@ export class ApiServices {
         .catch((err) => {
           reject(err.message);
         });
+    });
+  }
+
+  getProfilePicture() {
+    return this.http.get(
+      `${this.Root_URL_API}affiliate-partner/view-profile-pic`,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  changeProfilePic(data: any) {
+    return this.http.post(
+      `${this.Root_URL_API}affiliate-partner/change-profile-pic`,
+      data,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  changePassword(data: any) {
+    return this.http.put(`${this.Root_URL_API}profile/password/update`, data, {
+      headers: this.getTokenHeader(),
     });
   }
 }

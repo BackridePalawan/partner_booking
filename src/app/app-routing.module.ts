@@ -13,6 +13,7 @@ import { MonthlyStatisticComponent } from './earning-statistic/monthly-statistic
 import { YearlyStatisticComponent } from './earning-statistic/yearly-statistic/yearly-statistic.component';
 import { ViewBookingComponent } from './view-booking/view-booking.component';
 import { NotificationsComponent } from './notifications/notifications.component';
+import { AuthGuardServices } from './services/auth.services';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -21,8 +22,13 @@ const routes: Routes = [
   { path: 'forgot-password', component: ForgotPasswordComponent },
   {
     path: 'affiliate',
+    canActivate: [AuthGuardServices],
+
     children: [
-      { path: 'dashboard', component: DashboardComponent },
+      {
+        path: 'dashboard',
+        component: DashboardComponent,
+      },
       { path: 'statistics', component: EarningStatisticComponent },
       { path: 'statistics/weekly', component: WeeklyStatisticComponent },
       { path: 'statistics/monthly', component: MonthlyStatisticComponent },

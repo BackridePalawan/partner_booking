@@ -16,7 +16,15 @@
       </div>
     </div>
     <div class="relative mr-10">
+      <img
+        *ngIf="!loadingPage"
+        [src]="profileLink"
+        alt="images"
+        class="h-[50px] w-[50px] rounded-full"
+        (click)="toggleDropdown()"
+      />
       <div
+        *ngIf="loadingPage"
         class="h-[50px] w-[50px] bg-black rounded-full cursor-pointer"
         (click)="toggleDropdown()"
       ></div>
@@ -28,16 +36,19 @@
         <ul>
           <li
             class="px-4 py-2 border-b last:border-b-0 hover:bg-secondary hover:text-white"
+            (click)="showDialog()"
           >
             <i class="fa-solid fa-user-pen"></i>&nbsp;&nbsp;Change Profile
           </li>
           <li
             class="px-4 py-2 border-b last:border-b-0 hover:bg-secondary hover:text-white"
+            (click)="showDialog2()"
           >
             <i class="fa-solid fa-key"></i>&nbsp;&nbsp;Change Password
           </li>
           <li
             class="px-4 py-2 border-b last:border-b-0 hover:bg-secondary hover:text-white"
+            (click)="logout()"
           >
             <i class="fa-solid fa-power-off text-red"></i>&nbsp;&nbsp;Logout
           </li>
@@ -46,3 +57,173 @@
     </div>
   </div>
 </div>
+<p-toast />
+
+<p-dialog
+  [modal]="true"
+  [(visible)]="visible"
+  [style]="{ width: '30rem' }"
+  [maximizable]="false"
+>
+  <div class="p-4 w-full shadow-lg rounded-lg border-highlight">
+    <p class="text-16 font-bold text-center">Change Profile Pic</p>
+    <div class="w-full h-[250px] flex justify-center items-center mt-4">
+      <label for="changeProfile" class="absolute">
+        <img
+          [src]="editLink"
+          alt="img"
+          class="h-[200px] w-[200px] rounded-lg"
+        />
+        <div
+          class="relative iconHolder flex justify-center items-center bg-white w-[50px] h-[50px] rounded-full shadow-lg"
+        >
+          <p class="text-center text-[26px]">
+            <svg
+              class="w-6 h-6 text-gray-800 dark:text-white text-[26px]"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="30"
+              height="30"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M7.5 4.586A2 2 0 0 1 8.914 4h6.172a2 2 0 0 1 1.414.586L17.914 6H19a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h1.086L7.5 4.586ZM10 12a2 2 0 1 1 4 0 2 2 0 0 1-4 0Zm2-4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </p>
+        </div>
+      </label>
+      <input
+        type="file"
+        name=""
+        id="changeProfile"
+        class="hidden"
+        (change)="onFileSelected($event)"
+      />
+    </div>
+    <div class="w-full justify-center items-center flex">
+      <!-- <div
+        class="my-4 py-3 px-5 bg-primary font-bold text-white rounded-full shadow-lg"
+      >
+        Change
+      </div> -->
+      <div class="py-4">
+        <p
+          class="changeButton"
+          style="--color: rgb(0, 237, 100)"
+          (click)="profileChange()"
+        >
+          <span>{{ buttonText }}</span
+          ><i></i>
+        </p>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog
+  [modal]="true"
+  [(visible)]="visible2"
+  [style]="{ width: '40rem' }"
+  [maximizable]="false"
+>
+  <div class="p-4 w-full shadow-lg rounded-lg border-highlight">
+    <p class="text-16 font-bold text-center mb-4">Change Password</p>
+    <form (ngSubmit)="changePassword()" [formGroup]="passwordChange">
+      <div class="w-full px-4 flex justify-evenly items-center">
+        <label
+          for="password"
+          class="text-md my-3 block font-semibold text-gray-800 w-1/2"
+          >Current Password :</label
+        >
+        <div class="flex justify-center items-center gap-2 w-full">
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            required=""
+            placeholder="Password"
+            class="border border-solid border-[#00000075] w-full rounded-lg bg-gray-100 px-4 py-2 focus:outline-none shadow-lg"
+            [class.border-red]="submitted && passwordChange.get('password')?.errors?.['required']"
+          />
+          <p
+            class="error-message mt-2"
+            *ngIf="submitted && passwordChange.get('password')?.errors?.['required']"
+          >
+            <i class="fa-solid fa-circle-exclamation text-red text-[24px]"></i>
+          </p>
+        </div>
+      </div>
+      <div class="w-full px-4 flex justify-evenly items-center">
+        <label
+          for="new_password"
+          class="text-md my-3 block font-semibold text-gray-800 w-1/2"
+          >New Password :</label
+        >
+        <div class="flex justify-center items-center gap-2 w-full">
+          <input
+            type="password"
+            id="new_password"
+            formControlName="new_password"
+            required=""
+            placeholder="New Password"
+            class="border border-solid border-[#00000075] w-full rounded-lg bg-gray-100 px-4 py-2 focus:outline-none shadow-lg"
+            [class.border-red]="submitted && passwordChange.get('new_password')?.errors?.['required']"
+          />
+          <p
+            class="error-message mt-2"
+            *ngIf="submitted && passwordChange.get('new_password')?.errors?.['required']"
+          >
+            <i class="fa-solid fa-circle-exclamation text-red text-[24px]"></i>
+          </p>
+        </div>
+      </div>
+      <div class="w-full px-4 flex justify-evenly items-center">
+        <label
+          for="confirm_password"
+          class="text-md my-3 block font-semibold text-gray-800 w-1/2"
+          >Confirm New Password :</label
+        >
+        <div class="flex justify-center items-center gap-2 w-full">
+          <input
+            type="password"
+            id="confirm_password"
+            formControlName="new_password_confirmation"
+            required=""
+            placeholder="Confirm New Password"
+            class="border border-solid border-[#00000075] w-full rounded-lg bg-gray-100 px-4 py-2 focus:outline-none shadow-lg"
+            [class.border-red]="submitted && passwordChange.get('new_password_confirmation')?.errors?.['required']"
+          />
+          <p
+            class="error-message mt-2"
+            *ngIf="submitted && passwordChange.get('new_password')?.errors?.['required']"
+          >
+            <i class="fa-solid fa-circle-exclamation text-red text-[24px]"></i>
+          </p>
+        </div>
+      </div>
+
+      <div class="w-full justify-center items-center flex">
+        <!-- <div
+        class="my-4 py-3 px-5 bg-primary font-bold text-white rounded-full shadow-lg"
+      >
+        Change
+      </div> -->
+        <label for="changePass">
+          <div class="py-4">
+            <p class="changeButton" style="--color: rgb(255, 0, 0)">
+              <span>{{
+                buttonLoadingPage ? "Loading ...." : "Change Password"
+              }}</span
+              ><i></i>
+            </p>
+          </div>
+        </label>
+      </div>
+      <input type="submit" id="changePass" value="" class="hidden" />
+    </form>
+  </div>
+</p-dialog>

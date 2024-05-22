@@ -36,6 +36,12 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { ViewBookingComponent } from './view-booking/view-booking.component';
 import { CancelBookingComponent } from './component/cancel-booking/cancel-booking.component';
 import { NotificationsComponent } from './notifications/notifications.component';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { RippleModule } from 'primeng/ripple';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { AuthGuardServices } from './services/auth.services';
 @NgModule({
   declarations: [
     AppComponent,
@@ -65,16 +71,25 @@ import { NotificationsComponent } from './notifications/notifications.component'
     BrowserModule,
     AppRoutingModule,
     InputOtpModule,
+    ButtonModule,
+    RippleModule,
     ProgressSpinnerModule,
     PasswordModule,
+    ToastModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
     ChartModule,
+    DialogModule,
     SweetAlert2Module.forRoot(),
   ],
-  providers: [provideClientHydration(), DatePipe],
+  providers: [
+    provideClientHydration(),
+    DatePipe,
+    MessageService,
+    AuthGuardServices,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

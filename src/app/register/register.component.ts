@@ -29,7 +29,7 @@ export class RegisterComponent {
     phone: ['', [Validators.required]],
     password: ['', [Validators.required]],
     confirmPassword: ['', [Validators.required]],
-    userImage: ['', Validators.required],
+    profile: ['', Validators.required],
   });
 
   Otpform: FormGroup = this.formBuilder.group({
@@ -40,9 +40,9 @@ export class RegisterComponent {
     const file = event.target.files[0];
     if (file) {
       this.form!.patchValue({
-        userImage: file,
+        profile: file,
       });
-      this.form!.get('userImage')!.updateValueAndValidity();
+      this.form!.get('profile')!.updateValueAndValidity();
 
       const reader = new FileReader();
 
@@ -56,7 +56,7 @@ export class RegisterComponent {
   submit() {
     this.submitted = true;
 
-    if (this.form.get('userImage')!.invalid) {
+    if (this.form.get('profile')!.invalid) {
       Swal.fire({
         title: 'Error!',
         text: 'Please Upload A User Photo',
@@ -79,7 +79,9 @@ export class RegisterComponent {
     });
 
     // this.otpRequest = true;
-    // console.log(this.form.value);
+    // console.log(JSON.stringify(this.form.value));
+
+    // this.form.value
     this.loadingPage = true;
 
     this.apiService.sendOtp({ phone: phonenumber }).subscribe({
@@ -136,20 +138,31 @@ export class RegisterComponent {
           // this.loadingPage = false;
         },
         error: (error: HttpErrorResponse) => {
-          Swal.fire({
-            title: 'Error!',
-            text: error.message,
-            icon: 'error',
-            timer: 2000,
-            showConfirmButton: false,
-          });
+          // Swal.fire({
+          //   title: 'Error!',
+          //   text: error.message,
+          //   icon: 'error',
+          //   timer: 2000,
+          //   showConfirmButton: false,
+          // });
+          // this.register();
           this.loadingPage = false;
         },
       });
   }
 
   register() {
-    this.apiService.register(this.form.value).subscribe({
+    const submitData = new FormData();
+
+    submitData.append('name', this.form.get('name')?.value);
+    submitData.append('email', this.form.get('email')?.value);
+    submitData.append('phone', this.form.get('phone')?.value);
+    submitData.append('password', this.form.get('password')?.value);
+    const profile = this.form?.get('profile')?.value;
+    if (profile) {
+      submitData.append('profile', profile);
+    }
+    this.apiService.register(submitData).subscribe({
       next: (res: any) => {
         Swal.fire({
           title: 'Success',
@@ -168,6 +181,8 @@ export class RegisterComponent {
           timer: 2000,
           showConfirmButton: false,
         });
+
+        console.log(error.message);
       },
     });
   }
