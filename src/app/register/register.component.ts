@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiServices } from '../services/api-services';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -10,18 +10,22 @@ import { Router } from '@angular/router';
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   imageUrl = 'assets/images/camera.jpg';
 
   submitted = false;
   loadingPage = false;
   otpRequest = false;
+  branches: any[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
     private apiService: ApiServices,
     private route: Router
   ) {}
+  ngOnInit(): void {
+    this.getBranch();
+  }
 
   form: FormGroup = this.formBuilder.group({
     name: ['', [Validators.required]],
@@ -29,6 +33,7 @@ export class RegisterComponent {
     phone: ['', [Validators.required]],
     password: ['', [Validators.required]],
     confirmPassword: ['', [Validators.required]],
+    branch: ['', [Validators.required]],
     profile: ['', Validators.required],
   });
 
@@ -55,7 +60,7 @@ export class RegisterComponent {
 
   submit() {
     this.submitted = true;
-
+    console.log(this.form.value);
     if (this.form.get('profile')!.invalid) {
       Swal.fire({
         title: 'Error!',
@@ -78,10 +83,6 @@ export class RegisterComponent {
       phone: phonenumber,
     });
 
-    // this.otpRequest = true;
-    // console.log(JSON.stringify(this.form.value));
-
-    // this.form.value
     this.loadingPage = true;
 
     this.apiService.sendOtp({ phone: phonenumber }).subscribe({
@@ -158,6 +159,7 @@ export class RegisterComponent {
     submitData.append('email', this.form.get('email')?.value);
     submitData.append('phone', this.form.get('phone')?.value);
     submitData.append('password', this.form.get('password')?.value);
+    submitData.append('branch', this.form.get('branch')?.value);
     const profile = this.form?.get('profile')?.value;
     if (profile) {
       submitData.append('profile', profile);
@@ -202,5 +204,17 @@ export class RegisterComponent {
         },
         error: (error: HttpErrorResponse) => {},
       });
+  }
+
+  getBranch() {
+    this.apiService.getActiveBranch().subscribe({
+      next: (res: any) => {
+        console.log(res);
+        this.branches = res;
+      },
+      error: (error: HttpErrorResponse) => {
+        console.log(error);
+      },
+    });
   }
 }

@@ -90,7 +90,13 @@
           <span>Notifications</span>
         </a>
       </li>
-      <li class="px-4 py-2 hover:bg-gray-700 rounded">
+      <li class="px-4 py-2 hover:bg-gray-700 rounded relative">
+        <div
+          class="w-full h-full absolute bg-[#06060663] not_active rounded flex justify-end items-center"
+          *ngIf="!is_active"
+        >
+          <i class="fa-solid fa-lock text-[20px] text-white px-3"></i>
+        </div>
         <a routerLink="/affiliate/statistics" class="flex items-center">
           <svg
             class="w-6 h-6 text-gray-800 text-white mr-2"
@@ -112,13 +118,25 @@
           <span>Earnings Statistic</span>
         </a>
       </li>
-      <li class="px-4 py-2 hover:bg-gray-700 rounded">
+      <li class="px-4 py-2 hover:bg-gray-700 rounded relative">
+        <div
+          class="w-full h-full absolute bg-[#06060663] not_active rounded flex justify-end items-center"
+          *ngIf="!is_active"
+        >
+          <i class="fa-solid fa-lock text-[20px] text-white px-3"></i>
+        </div>
         <a routerLink="/affiliate/book/customer" class="flex items-center">
           <i class="fa-solid fa-address-book text-[24px] mr-2"></i>
           <span>Book for Customer</span>
         </a>
       </li>
-      <li class="px-4 py-2 hover:bg-gray-700 rounded">
+      <li class="px-4 py-2 hover:bg-gray-700 rounded relative">
+        <div
+          class="w-full h-full absolute bg-[#06060663] not_active rounded flex justify-end items-center"
+          *ngIf="!is_active"
+        >
+          <i class="fa-solid fa-lock text-[20px] text-white px-3"></i>
+        </div>
         <a
           [routerLink]="['/affiliate/customers', 'all']"
           class="flex items-center"

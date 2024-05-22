@@ -42,6 +42,7 @@ import { RippleModule } from 'primeng/ripple';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { AuthGuardServices } from './services/auth.services';
+import { isActiveServices } from './services/isActive.services';
 @NgModule({
   declarations: [
     AppComponent,
@@ -89,6 +90,7 @@ import { AuthGuardServices } from './services/auth.services';
     DatePipe,
     MessageService,
     AuthGuardServices,
+    isActiveServices,
   ],
   bootstrap: [AppComponent],
 })

@@ -124,6 +124,12 @@ export class ApiServices {
     });
   }
 
+  getActiveBranch() {
+    return this.http.get(`${this.Root_URL_API}branches`, {
+      headers: this.getTokenHeader(),
+    });
+  }
+
   getAffiliateOrders(page: string, status: string) {
     return this.http.get(
       `${this.Root_URL_API}affiliate-partner/orders/${status}?page=${page}`,
@@ -288,5 +294,21 @@ export class ApiServices {
     return this.http.put(`${this.Root_URL_API}profile/password/update`, data, {
       headers: this.getTokenHeader(),
     });
+  }
+
+  markAsRead(id: string) {
+    return this.http.get(
+      `${this.Root_URL_API}affiliate/notifications/${id}/read`,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  forgotPassword(data: any) {
+    return this.http.post(
+      `${this.Root_URL_API}affiliate/forgot/password`,
+      data
+    );
   }
 }

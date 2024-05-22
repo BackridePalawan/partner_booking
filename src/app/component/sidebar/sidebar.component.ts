@@ -14,6 +14,7 @@ export class SidebarComponent implements OnInit {
 
   constructor(private apiService: ApiServices) {}
   userDetail: any;
+  is_active: boolean = false;
   loadData: boolean = true;
   ngOnInit(): void {
     this.getUserDetails();
@@ -30,10 +31,9 @@ export class SidebarComponent implements OnInit {
     this.apiService.getUserDetails().subscribe({
       next: (res) => {
         this.userDetail = res;
-        localStorage.setItem(
-          'userDetails',
-          JSON.stringify(this.userDetail.user)
-        );
+        this.is_active = this.userDetail.user.is_active;
+        console.log(this.is_active);
+        localStorage.setItem('branch_id', this.userDetail.user.branch_id);
         this.loadData = false;
       },
       error: (error: HttpErrorResponse) => {},

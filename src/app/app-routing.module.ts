@@ -14,6 +14,7 @@ import { YearlyStatisticComponent } from './earning-statistic/yearly-statistic/y
 import { ViewBookingComponent } from './view-booking/view-booking.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { AuthGuardServices } from './services/auth.services';
+import { isActiveServices } from './services/isActive.services';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -29,16 +30,52 @@ const routes: Routes = [
         path: 'dashboard',
         component: DashboardComponent,
       },
-      { path: 'statistics', component: EarningStatisticComponent },
-      { path: 'statistics/weekly', component: WeeklyStatisticComponent },
-      { path: 'statistics/monthly', component: MonthlyStatisticComponent },
-      { path: 'statistics/yearly', component: YearlyStatisticComponent },
-      { path: 'book/customer', component: BookComponent },
-      { path: 'book/details/:orderId', component: OrderDetailsComponent },
+      {
+        path: 'statistics',
+        component: EarningStatisticComponent,
+        canActivate: [isActiveServices],
+      },
+      {
+        path: 'statistics/weekly',
+        component: WeeklyStatisticComponent,
+        canActivate: [isActiveServices],
+      },
+      {
+        path: 'statistics/monthly',
+        component: MonthlyStatisticComponent,
+        canActivate: [isActiveServices],
+      },
+      {
+        path: 'statistics/yearly',
+        component: YearlyStatisticComponent,
+        canActivate: [isActiveServices],
+      },
+      {
+        path: 'book/customer',
+        component: BookComponent,
+        canActivate: [isActiveServices],
+      },
+      {
+        path: 'book/details/:orderId',
+        component: OrderDetailsComponent,
+        canActivate: [isActiveServices],
+      },
       { path: 'notifications', component: NotificationsComponent },
-      { path: 'customers/:status', component: BookedCustomerComponent },
-      { path: 'customers', component: BookedCustomerComponent },
-      { path: 'viewbooking/:code', component: ViewBookingComponent },
+      {
+        path: 'customers/:status',
+        component: BookedCustomerComponent,
+        canActivate: [isActiveServices],
+      },
+      {
+        path: 'customers',
+        component: BookedCustomerComponent,
+        canActivate: [isActiveServices],
+      },
+      {
+        path: 'viewbooking/:code',
+        component: ViewBookingComponent,
+        canActivate: [isActiveServices],
+      },
       { path: '', component: DashboardComponent },
     ],
   },

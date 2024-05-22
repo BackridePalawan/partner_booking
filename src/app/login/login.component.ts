@@ -66,11 +66,11 @@ export class LoginComponent {
         this.loadingPage = false;
       },
       error: (error: HttpErrorResponse) => {
+        console.log(error.error);
         Swal.fire({
-          title: 'Error!',
-          text: 'Server Error',
+          title: error.error.message,
           icon: 'error',
-          timer: 2000,
+          timer: 7000,
           showConfirmButton: false,
         });
         this.loadingPage = false;

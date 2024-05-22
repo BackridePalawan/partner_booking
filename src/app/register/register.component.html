@@ -40,6 +40,32 @@
           </p>
         </div>
         <label
+          for="branch"
+          class="text-md my-3 block font-semibold text-gray-800"
+          >Branch</label
+        >
+        <p class="text-16 font-bold" *ngIf="branches.length == 0">
+          Loading ....
+        </p>
+        <select
+          *ngIf="branches.length != 0"
+          name=""
+          formControlName="branch"
+          id=""
+          class="w-full rounded-lg bg-gray-100 px-4 py-2 focus:outline-none shadow-lg border border-solid border-[#00000075]"
+        >
+          <option value="">Please Select</option>
+          <option value="{{ branch.id }}" *ngFor="let branch of branches">
+            {{ branch.name }}
+          </option>
+        </select>
+        <p
+          class="error-message mt-2"
+          *ngIf="submitted && form.get('branch')?.errors?.['required']"
+        >
+          Branch is required
+        </p>
+        <label
           for="fullname"
           class="text-md my-3 block font-semibold text-gray-800"
           >Full Name</label
@@ -56,7 +82,7 @@
           class="error-message mt-2"
           *ngIf="submitted && form.get('name')?.errors?.['required']"
         >
-          Phone is required
+          Full Name is required
         </p>
         <label
           for="email"

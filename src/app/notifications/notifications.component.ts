@@ -22,7 +22,7 @@ export class NotificationsComponent implements OnInit {
   title: string = 'Notifications';
   filterSelect: number = 1;
   pollingSubscription: Subscription;
-  data: any;
+  data: any[] = [];
   ngOnInit(): void {
     this.startPolling();
   }
@@ -33,17 +33,46 @@ export class NotificationsComponent implements OnInit {
   }
 
   openMessage(notif: any) {
-    Swal.fire({
-      // title: 'Notification Details',s
-      html: this.getModalContent(notif),
-      showConfirmButton: false,
-      showCancelButton: true,
-      // width: '70%',
-      cancelButtonText: 'Close',
+    console.log(notif.id);
+    if (notif.is_read) {
+      Swal.fire({
+        // title: 'Notification Details',s
+        html: this.getModalContent(notif),
+        showConfirmButton: false,
+        showCancelButton: true,
+        // width: '70%',~
+        cancelButtonText: 'Close',
 
-      customClass: {
-        popup: 'w-[60%] bg-[#c8c6c6]',
-        cancelButton: 'text-12 px-5 py-2 bg-danger font-bold text-white',
+        customClass: {
+          popup: 'w-[60%] bg-[#c8c6c6]',
+          cancelButton: 'text-12 px-5 py-2 bg-danger font-bold text-white',
+        },
+      });
+      return;
+    }
+    this.api.markAsRead(notif.id).subscribe({
+      next: (res: any) => {
+        console.log(res);
+        Swal.fire({
+          // title: 'Notification Details',s
+          html: this.getModalContent(notif),
+          showConfirmButton: false,
+          showCancelButton: true,
+          // width: '70%',~
+          cancelButtonText: 'Close',
+
+          customClass: {
+            popup: 'w-[60%] bg-[#c8c6c6]',
+            cancelButton: 'text-12 px-5 py-2 bg-danger font-bold text-white',
+          },
+        });
+      },
+      error: (error: HttpErrorResponse) => {
+        Swal.fire({
+          title: error.error.message,
+          icon: 'warning',
+          timer: 5000,
+        });
       },
     });
   }

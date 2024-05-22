@@ -356,7 +356,15 @@ export class BookComponent implements OnInit {
   }
 
   getAvailbleVehicle() {
-    this.api.findVehicleTypes('6').subscribe({
+    const branchID = localStorage.getItem('branch_id');
+    if (branchID == '' || branchID == undefined) {
+      Swal.fire({
+        title: 'Please Try Again..',
+        icon: 'warning',
+        timer: 5000,
+      });
+    }
+    this.api.findVehicleTypes(branchID ?? '').subscribe({
       next: (res) => {
         console.log(res);
         this.vehiclesAvailable = res;
