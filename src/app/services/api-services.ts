@@ -93,6 +93,7 @@ export class ApiServices {
   }
 
   booking(book: any) {
+    console.log(book);
     // console.log(this.Root_URL_API + 'taxi/book/order');
     return this.http.post(this.Root_URL_API + 'taxi/book/order', book, {
       headers: this.getTokenHeader(),
@@ -145,7 +146,7 @@ export class ApiServices {
     });
   }
 
-  addAffiliateBook(data: { order_id: string; commission: string }) {
+  addAffiliateBook(data: { order_id: string }) {
     return this.http.post(`${this.Root_URL_API}affiliate/book`, data, {
       headers: this.getTokenHeader(),
     });
@@ -206,6 +207,15 @@ export class ApiServices {
       }
     );
   }
+  getEarningsAndOrders(data: any, page: string) {
+    return this.http.post(
+      `${this.Root_URL_API}affiliate/earnings/EarningOrders?page=${page}`,
+      data,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
 
   cancelBooking(orderID: string, reason: string) {
     return this.http.get(
@@ -217,9 +227,9 @@ export class ApiServices {
     );
   }
 
-  getNotification() {
+  getNotification(page: string, status: string) {
     return this.http.get(
-      `${this.Root_URL_API}affiliate/notifications`,
+      `${this.Root_URL_API}affiliate/notifications?page=${page}&status=${status}`,
 
       {
         headers: this.getTokenHeader(),
@@ -309,6 +319,96 @@ export class ApiServices {
     return this.http.post(
       `${this.Root_URL_API}affiliate/forgot/password`,
       data
+    );
+  }
+
+  getGeocoder() {
+    return {
+      forward: async (latitude: number, longitude: number) => {
+        return new Promise((resolve, reject) => {
+          // fetch(this.baseUrl + `cu/forward?lat=${latitude}&lng=${longitude}`, {
+          //   headers: this.getHeaders(),
+          // })
+          //   .then((res) => res.json())
+          //   .then((u) => {
+          //     resolve(u)
+          //   })
+          //   .catch((err) => {
+          //     reject(err.message)
+          //   })
+          resolve({
+            data: [{ formatted_address: '' }],
+          });
+        });
+      },
+      reverse: async (keyword: string) => {
+        return new Promise((resolve, reject) => {
+          fetch(this.baseUrl + `cu/reverse?keyword=${keyword}`, {
+            headers: this.getHeaders(),
+          })
+            .then((res) => res.json())
+            .then((u) => {
+              resolve(u);
+            })
+            .catch((err) => {
+              reject(err.message);
+            });
+        });
+      },
+      reverseOriginal: async (keyword: string) => {
+        return new Promise((resolve, reject) => {
+          fetch(this.baseUrl + `geocoder/reverse?keyword=${keyword}`, {
+            headers: this.getHeaders(),
+          })
+            .then((res) => res.json())
+            .then((u) => {
+              resolve(u);
+            })
+            .catch((err) => {
+              reject(err.message);
+            });
+        });
+      },
+    };
+  }
+
+  getVehicleEstimatePrice(pickup: string, dropoff: string) {
+    return this.http.get(
+      `${this.Root_URL_API}vehicle/types/pricing?type=ride&pickup=${pickup}&dropoff=${dropoff}&country_code=ph`,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+    // http://192.168.254.159:8000/api/vehicle/types/pricing?type=ride&pickup=8.180530222236891%2C,126.36131990700959&dropoff=8.18154439907801%2C,126.356032602489&country_code=ph
+  }
+
+  sendBookingDetails(data: any) {
+    return this.http.post(
+      `${this.Root_URL_API}affiliate-partner/send-book-details`,
+      data,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  searchBookingOrder(page: string, data: any) {
+    return this.http.post(
+      `${this.Root_URL_API}affiliate-partner/search-order?page=${page}`,
+      data,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  getMonthEarnAndFee(data: any) {
+    return this.http.post(
+      `${this.Root_URL_API}affiliate-partner/monthEarnings`,
+      data,
+      {
+        headers: this.getTokenHeader(),
+      }
     );
   }
 }

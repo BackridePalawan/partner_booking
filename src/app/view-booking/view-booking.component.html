@@ -1,10 +1,11 @@
 <div class="map h-[40%]" id="map"></div>
 
-<div class="w-full h-[60%] reciept flex justify-center items-center bg-primary">
+<div class="w-full h-[90%] reciept flex justify-center items-center bg-primary">
   <div
     class="w-[500px] bg-white justify-center items-center rounded-lg shadow-lg p-4"
-    data-aos="fade-up"
-    data-aos-duration="3000"
+    data-aos="flip-left"
+    data-aos-easing="ease-out-cubic"
+    data-aos-duration="2000"
   >
     <p class="text-center font-bold text-2xl">
       <i class="fa-solid fa-receipt"></i>&nbsp;Book Details
@@ -12,70 +13,212 @@
     <div>
       <div class="w-full divider-black bg-black my-2"></div>
       <div class="flex justify-between items-center mt-3">
-        <p class="font-semibold text-16">Order ID:</p>
-        <p class="font-bold text-16">
+        <p class="font-semibold text-16">
+          Booking ID:&nbsp;&nbsp;&nbsp;
           {{ loadingPage ? "LOADING...." : "#" + details.id }}
         </p>
-      </div>
-      <div class="w-full divider-black-1 bg-black my-2"></div>
-      <div class="flex justify-between items-center mt-3">
-        <p class="font-semibold text-16">Status:</p>
         <p class="font-bold text-16">
+          Current Status:&nbsp;&nbsp;&nbsp;
           {{ loadingPage ? "LOADING...." : details.status.toUpperCase() }}
         </p>
       </div>
-      <div class="w-full divider-black-1 bg-black my-2"></div>
+      <div class="flex justify-between items-center mt-3">
+        <p class="font-semibold text-16">Verification Code:</p>
+        <p
+          class="font-bold text-16 py-1 px-2 bg-secondary text-white rounded-2xl"
+        >
+          {{ loadingPage ? "LOADING...." : details.verification_code }}
+        </p>
+      </div>
 
+      <div class="w-full divider-black-1 bg-black my-2"></div>
+      <p class="text-12 font-bold my-2">Customer Details :</p>
       <div class="flex justify-evenly items-center">
         <div class="flex justify-center items-center w-1/2">
           <div
             *ngIf="loadingPage"
-            class="w-[100px] h-[100px] flex justify-center items-center"
+            class="w-[50px] h-[50px] flex justify-center items-center"
           >
             <div class="spinner"></div>
           </div>
 
           <div
-            class="w-[100px] h-[100px] bg-primary shadow-lg rounded-lg flex justify-center items-center"
+            class="w-[50px] h-[50px] bg-primary shadow-lg rounded-lg flex justify-center items-center"
             *ngIf="!loadingPage"
           >
-            <i class="fa-solid fa-user text-[70px] text-white"></i>
+            <i
+              class="fa-solid fa-user text-[25px] text-white"
+              *ngIf="details.taxi_order.passenger_photo === ''"
+            ></i>
+            <img
+              *ngIf="details.taxi_order.passenger_photo !== ''"
+              [src]="details.taxi_order.passenger_photo"
+              alt=""
+              class="w-full h-full object-contain"
+            />
           </div>
         </div>
         <div class="w-1/2">
-          <div class="flex justify-between items-center mt-3">
-            <p class="font-semibold text-16">
-              <i class="fa-regular fa-user"></i>
-            </p>
-            <p class="font-bold text-16">
-              {{
-                loadingPage
-                  ? "LOADING...."
-                  : details.taxi_order.passenger_full_name
-              }}
-            </p>
-          </div>
-          <div class="w-full divider-black-1 bg-black my-2"></div>
+          <p class="font-bold text-16">
+            <i class="fa-regular fa-user"></i>&nbsp;&nbsp;&nbsp;{{
+              loadingPage
+                ? "LOADING...."
+                : details.taxi_order.passenger_full_name
+            }}
+          </p>
 
-          <div class="flex justify-between items-center mt-3">
-            <p class="font-semibold text-16">
-              <i class="fa-solid fa-phone"></i>
-            </p>
-            <p class="font-bold text-16">
-              {{
-                loadingPage
-                  ? "LOADING...."
-                  : details.taxi_order.passenger_contact_number
-              }}
-            </p>
-          </div>
-          <div class="w-full divider-black-1 bg-black my-2"></div>
+          <p class="font-bold text-16">
+            <i class="fa-solid fa-phone"></i>&nbsp;&nbsp;&nbsp;{{
+              loadingPage
+                ? "LOADING...."
+                : details.taxi_order.passenger_contact_number
+            }}
+          </p>
         </div>
       </div>
-      <div class="w-full divider-black-1 bg-black mt-7"></div>
+      <div class="w-full divider-black-1 bg-black my-2"></div>
+      <p class="text-12 font-bold my-2">Driver Details :</p>
+      <div class="flex justify-evenly items-center">
+        <div class="flex justify-center items-center w-1/2">
+          <div
+            *ngIf="loadingPage"
+            class="w-[50px] h-[50px] flex justify-center items-center"
+          >
+            <div class="spinner"></div>
+          </div>
+
+          <div
+            class="w-[50px] h-[50px] bg-primary shadow-lg rounded-lg flex justify-center items-center"
+            *ngIf="!loadingPage"
+          >
+            <img
+              [src]="details.driver.photo"
+              alt=""
+              class="w-full h-full object-contain"
+            />
+          </div>
+        </div>
+        <div class="w-1/2">
+          <p class="font-bold text-16">
+            <i class="fa-regular fa-user"></i>&nbsp;&nbsp;&nbsp;{{
+              loadingPage ? "LOADING...." : details.driver.name
+            }}
+          </p>
+
+          <p class="font-bold text-16">
+            <i class="fa-solid fa-phone"></i>&nbsp;&nbsp;&nbsp;{{
+              loadingPage ? "LOADING...." : details.driver.phone
+            }}
+          </p>
+        </div>
+      </div>
+      <div class="w-full divider-black-1 bg-black my-2"></div>
+      <p class="font-semibold text-16 mt-3">Status:</p>
+      <div class="flex justify-start items-start flex-col mt-2">
+        <div class="max-w-[100%] text-sm mx-auto p-2">
+          <div
+            class="flex items-center gap-1 justify-between"
+            *ngFor="let status of details.statuses"
+          >
+            <div class="font-bold text-12">
+              {{ loadingPage ? "LOADING...." : status.name.toUpperCase() }}
+            </div>
+            <div class="h-[1px] flex-1 bg-gray-200"></div>
+            <div class="font-bold text-12">
+              ({{
+                loadingPage
+                  ? "LOADING...."
+                  : datePipe.transform(
+                      status.created_at,
+                      "MMMM d, y, hh:mm:ss a"
+                    )
+              }})
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="w-full divider-black-1 bg-black mt-1"></div>
+      <div class="w-full">
+        <div class="max-w-[300px] text-sm mx-auto p-2">
+          <div class="my-3"></div>
+          <div class="flex items-center gap-1 justify-between">
+            <div>Pickup Distance</div>
+            <div class="h-[1px] flex-1 bg-gray-200"></div>
+            <div>
+              {{
+                details?.taxi_order?.trip_details?.pickup_distance ?? 0
+                  | number : ".0-2"
+              }}
+              KM
+            </div>
+          </div>
+          <div class="flex items-center gap-1 justify-between">
+            <div>Pickup Exceed</div>
+            <div class="h-[1px] flex-1 bg-gray-200"></div>
+            <div>
+              {{
+                details?.taxi_order?.trip_details?.pickup_exceed_km ?? 0
+                  | number : ".0-2"
+              }}
+              KM
+            </div>
+          </div>
+          <div class="flex items-center gap-1 justify-between">
+            <div>Trip Distance</div>
+            <div class="h-[1px] flex-1 bg-gray-200"></div>
+            <div>
+              {{
+                details?.taxi_order?.trip_details?.km_distance ?? 0
+                  | number : ".0-2"
+              }}
+              KM
+            </div>
+          </div>
+
+          <div class="my-3"></div>
+
+          <div class="flex items-center gap-1 justify-between">
+            <div>Trip Fee</div>
+            <div class="h-[1px] flex-1 bg-gray-200"></div>
+            <div>
+              {{
+                (details?.taxi_order?.trip_details?.pickup_dropoff_subtotal ??
+                  0) +
+                  (details?.affiliate_order?.commission ?? 0) | number : ".0-0"
+              }}
+              PHP
+            </div>
+          </div>
+          <div class="flex items-center gap-1 justify-between">
+            <div>Pickup Fee</div>
+            <div class="h-[1px] flex-1 bg-gray-200"></div>
+            <div>
+              {{
+                details?.taxi_order?.trip_details?.pickup_charge_fee ?? 0
+                  | number : ".0-0"
+              }}
+              PHP
+            </div>
+          </div>
+          <div class="flex items-center gap-1 justify-between">
+            <div>Luggage Fee</div>
+            <div class="h-[1px] flex-1 bg-gray-200"></div>
+            <div>{{ details?.taxi_order?.luggage_fee ?? 0 }} PHP</div>
+          </div>
+          <div class="my-3"></div>
+          <ng-container *ngIf="(details?.tip ?? 0) != 0">
+            <div class="flex items-center gap-1 justify-between">
+              <div>Tip Amount</div>
+              <div class="h-[1px] flex-1 bg-gray-200"></div>
+              <div>{{ details?.tip }} PHP</div>
+            </div>
+            <div class="my-3"></div>
+          </ng-container>
+        </div>
+      </div>
     </div>
     <!-- driver details -->
-    <p class="text-center font-bold text-2xl mt-7">Driver Details</p>
+    <!-- <p class="text-center font-bold text-2xl mt-7">Driver Details</p>
     <div class="flex justify-evenly items-center">
       <div class="flex justify-center items-center w-1/2">
         <div
@@ -122,10 +265,10 @@
         </div>
         <div class="w-full divider-black-1 bg-black my-2"></div>
       </div>
-    </div>
-    <div class="w-full py-4 border border-black my-4 rounded-2xl">
-      <p class="text-16 text-center font-semibold">Total Payment:</p>
-      <p class="text-2xl text-center font-bold">
+    </div> -->
+    <div class="w-full py-2 border border-black my-2 rounded-2xl">
+      <p class="text-12 text-center font-semibold">Total Payment:</p>
+      <p class="text-16 text-center font-bold">
         ₱{{
           loadingPage
             ? "LOADING...."

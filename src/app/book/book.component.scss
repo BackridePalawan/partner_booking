@@ -6,3 +6,100 @@
   -o-text-overflow: ellipsis;
   max-width: 70%;
 }
+
+@keyframes jump {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+.animate-jump {
+  animation: jump 0.5s ease-in-out infinite;
+}
+
+.button-placement {
+  position: absolute;
+  top: 31%;
+}
+
+.trike {
+  background: url(../../assets/ride.png);
+}
+
+.ball {
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(181deg, #bf360c, #87270a);
+  border-radius: 50%;
+  position: relative;
+  animation: ball 3s cubic-bezier(0.34, 1.56, 0.64, 1) 0s infinite alternate
+    forwards;
+}
+
+.ball::before,
+.ball::after {
+  content: "";
+  position: absolute;
+  width: 60%;
+  height: 20px;
+  background-color: #fff;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ball::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.ball::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+@keyframes ball {
+  0% {
+    animation-timing-function: ease-in;
+    opacity: 1;
+    transform: translateY(-45px);
+  }
+
+  24% {
+    opacity: 1;
+  }
+
+  40% {
+    animation-timing-function: ease-in;
+    transform: translateY(-24px);
+  }
+
+  65% {
+    animation-timing-function: ease-in;
+    transform: translateY(-12px);
+  }
+
+  82% {
+    animation-timing-function: ease-in;
+    transform: translateY(-6px);
+  }
+
+  93% {
+    animation-timing-function: ease-in;
+    transform: translateY(-4px);
+  }
+
+  25%,
+  55%,
+  75%,
+  87% {
+    animation-timing-function: ease-out;
+    transform: translateY(0px);
+  }
+
+  100% {
+    animation-timing-function: ease-out;
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}

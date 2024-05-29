@@ -93,11 +93,13 @@ export class NavHeaderComponent implements OnInit {
       .subscribe({
         next: (res: any) => {
           // console.log('fetching', res);
-          const timenow = this.datePipe.transform(new Date(), 'HH:mm');
+          const timenow = this.datePipe.transform(new Date(), 'HH:mm:ss');
           this.data = res.data.data;
           this.totalNotif = res.data.total;
           this.data.filter((ele) => {
-            if (timenow == this.datePipe.transform(ele.created_at, 'HH:mm')) {
+            if (
+              timenow == this.datePipe.transform(ele.created_at, 'HH:mm:ss')
+            ) {
               this.show(ele);
             }
           });

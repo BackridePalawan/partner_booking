@@ -21,8 +21,14 @@ export class NotificationsComponent implements OnInit {
   ) {}
   title: string = 'Notifications';
   filterSelect: number = 1;
+  selectedPage: number = 1;
+  fromPage: string = '1';
+  toPage: string = '';
+  status: string = 'any';
   pollingSubscription: Subscription;
   data: any[] = [];
+  loadingPage: boolean = true;
+
   ngOnInit(): void {
     this.startPolling();
   }
@@ -77,6 +83,29 @@ export class NotificationsComponent implements OnInit {
     });
   }
 
+  next() {
+    if (this.selectedPage.toString() == this.toPage.toString()) {
+      return;
+    }
+    this.selectedPage = this.selectedPage + 1;
+    console.log('stop');
+    this.loadingPage = true;
+    this.stopPolling();
+    console.log('go');
+    this.startPolling();
+  }
+  prev() {
+    if (this.selectedPage.toString() == this.fromPage.toString()) {
+      return;
+    }
+    this.selectedPage = this.selectedPage - 1;
+    console.log('stop');
+    this.loadingPage = true;
+    this.stopPolling();
+    console.log('go');
+    this.startPolling();
+  }
+
   getModalContent(notif: any): string {
     return `
               <div class="p-4 md:p-5 space-y-4 bg-[#c8c6c6]">
@@ -93,17 +122,48 @@ export class NotificationsComponent implements OnInit {
   startPolling(): void {
     // Use timer to emit values at a fixed interval
     this.pollingSubscription = timer(0, 5000)
-      .pipe(switchMap(() => this.api.getNotification()))
+      .pipe(
+        switchMap(() =>
+          this.api.getNotification(this.selectedPage.toString(), this.status)
+        )
+      )
       .subscribe({
         next: (res: any) => {
+          console.log(res);
           console.log('fetching', res.data.data);
+          this.toPage = res.data.last_page.toString();
           this.data = res.data.data;
+          this.loadingPage = false;
         },
         error: (error: HttpErrorResponse) => {
           console.log(error);
           this.stopPolling();
         },
       });
+  }
+
+  all() {
+    this.filterSelect = 1;
+    this.loadingPage = true;
+    this.status = 'any';
+    this.stopPolling();
+    this.startPolling();
+  }
+
+  read() {
+    this.filterSelect = 2;
+    this.loadingPage = true;
+    this.status = 'read';
+    this.stopPolling();
+    this.startPolling();
+  }
+
+  unRead() {
+    this.filterSelect = 3;
+    this.loadingPage = true;
+    this.status = 'unread';
+    this.stopPolling();
+    this.startPolling();
   }
 
   stopPolling(): void {

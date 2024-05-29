@@ -1,125 +1,243 @@
 <div class="w-full h-screen flex justify-center items-center">
   <div
-    class="w-[500px] bg-white justify-center items-center rounded-lg shadow-lg p-4"
-    data-aos="fade-up"
-    data-aos-duration="3000"
+    class="w-full h-full reciept flex justify-center items-center bg-secondary"
   >
-    <p class="text-center font-bold text-2xl">
-      <i class="fa-solid fa-receipt"></i>&nbsp;Book Details
-    </p>
-    <div>
-      <div class="w-full divider-black bg-black my-2"></div>
-      <div class="flex justify-between items-center mt-3">
-        <p class="font-semibold text-16">Order ID:</p>
-        <p class="font-bold text-16">
-          {{ orderReceipt.id }}
-        </p>
-      </div>
-      <div class="w-full divider-black-1 bg-black my-2"></div>
-      <div class="flex justify-between items-center mt-3">
-        <p class="font-semibold text-16">Status:</p>
-        <p class="font-bold text-16">
-          {{ orderReceipt.status.toUpperCase() }}
-        </p>
-      </div>
-      <div class="w-full divider-black-1 bg-black my-2"></div>
-
-      <div class="flex justify-evenly items-center">
-        <div class="flex justify-center items-center w-1/2">
-          <div
-            class="w-[100px] h-[100px] bg-primary shadow-lg rounded-lg flex justify-center items-center"
-            *ngIf="orderReceipt.taxi_order.passenger_photo === ''"
-          >
-            <i class="fa-solid fa-user text-[80px] text-white"></i>
-          </div>
-          <img
-            *ngIf="orderReceipt.taxi_order.passenger_photo !== ''"
-            [src]="orderReceipt.taxi_order.passenger_photo"
-            alt="driver_photo"
-            class="w-[100px] h-[100px] bg-secondary shadow-lg rounded-lg"
-          />
-        </div>
-        <div class="w-1/2">
-          <div class="flex justify-between items-center mt-3">
-            <p class="font-semibold text-16">
-              <i class="fa-regular fa-user"></i>
-            </p>
-            <p class="font-bold text-16">
-              {{ orderReceipt.taxi_order.passenger_full_name }}
-            </p>
-          </div>
-          <div class="w-full divider-black-1 bg-black my-2"></div>
-
-          <div class="flex justify-between items-center mt-3">
-            <p class="font-semibold text-16">
-              <i class="fa-solid fa-phone"></i>
-            </p>
-            <p class="font-bold text-16">
-              {{ orderReceipt.taxi_order.passenger_contact_number }}
-            </p>
-          </div>
-          <div class="w-full divider-black-1 bg-black my-2"></div>
-        </div>
-      </div>
-      <div class="w-full divider-black-1 bg-black mt-7"></div>
-    </div>
-    <!-- driver details -->
-    <p class="text-center font-bold text-2xl mt-7">Driver Details</p>
-    <div class="flex justify-evenly items-center">
-      <div class="flex justify-center items-center w-1/2">
-        <img
-          [src]="orderReceipt.driver.photo"
-          alt="driver_photo"
-          class="w-[100px] h-[100px] bg-secondary shadow-lg rounded-lg"
-        />
-      </div>
-      <div class="w-1/2">
-        <div class="flex justify-between items-center mt-3">
-          <p class="font-semibold text-16">
-            <i class="fa-regular fa-user"></i>
-          </p>
-          <p class="font-bold text-16">
-            {{ orderReceipt.driver.name.toUpperCase() }}
-          </p>
-        </div>
-        <div class="w-full divider-black-1 bg-black my-2"></div>
-        <div class="flex justify-between items-center mt-3">
-          <p class="font-semibold text-16">
-            <i class="fa-regular fa-envelope"></i>
-          </p>
-          <p class="font-bold text-16">
-            {{ orderReceipt.driver.email }}
-          </p>
-        </div>
-        <div class="w-full divider-black-1 bg-black my-2"></div>
-        <div class="flex justify-between items-center mt-3">
-          <p class="font-semibold text-16">
-            <i class="fa-solid fa-phone"></i>
-          </p>
-          <p class="font-bold text-16">
-            {{ orderReceipt.driver.phone }}
-          </p>
-        </div>
-        <div class="w-full divider-black-1 bg-black my-2"></div>
-      </div>
-    </div>
-    <div class="w-full py-4 border border-black my-4 rounded-2xl">
-      <p class="text-16 text-center font-semibold">Total Payment:</p>
-      <p class="text-2xl text-center font-bold">₱{{ paymentTotal }}</p>
-    </div>
-
-    <p
-      class="text-16 font-semibold px-4 py-2 text-center bg-gray-100 flex items-center justify-center hover:bg-red hover:text-white"
-      (click)="showCancelAlert()"
-    >
-      <i class="fa-solid fa-xmark text-[25px] mr-4 text-red"></i>
-      Cancel Booking
-    </p>
     <div
-      class="w-full py-2 text-white text-2xl font-bold text-center bg-primary rounded-lg shadow-lg hover:bg-secondary mt-5"
-      (click)="bookAnotherOne()"
+      class="w-[500px] bg-white justify-center items-center rounded-lg shadow-lg p-4 border-3 border-solid border-black"
+      data-aos="flip-left"
+      data-aos-easing="ease-out-cubic"
+      data-aos-duration="2000"
     >
-      Book Another Customer
+      <p class="text-end font-bold text-16">
+        <i class="fa-solid fa-share"></i>
+      </p>
+      <p class="text-center font-bold text-2xl">
+        <i class="fa-solid fa-receipt"></i>&nbsp;Book Details
+      </p>
+
+      <div>
+        <div class="w-full divider-black bg-black my-2"></div>
+        <div class="flex justify-between items-center mt-3">
+          <p class="font-semibold text-16">
+            Booking ID:&nbsp;&nbsp;&nbsp;
+            {{ loadingPage ? "LOADING...." : "#" + orderReceipt.id }}
+          </p>
+          <p class="font-bold text-16">
+            Current Status:&nbsp;&nbsp;&nbsp;
+            {{
+              loadingPage ? "LOADING...." : orderReceipt.status.toUpperCase()
+            }}
+          </p>
+        </div>
+        <div class="flex justify-between items-center mt-3">
+          <p class="font-semibold text-16">Verification Code:</p>
+          <p
+            class="font-bold text-16 py-1 px-2 bg-secondary text-white rounded-2xl"
+          >
+            {{ loadingPage ? "LOADING...." : orderReceipt.verification_code }}
+          </p>
+        </div>
+
+        <div class="w-full divider-black-1 bg-black my-2"></div>
+        <p class="text-12 font-bold my-2">Customer Details :</p>
+        <div class="flex justify-evenly items-center">
+          <div class="flex justify-center items-center w-1/2">
+            <div
+              *ngIf="loadingPage"
+              class="w-[50px] h-[50px] flex justify-center items-center"
+            >
+              <div class="spinner"></div>
+            </div>
+
+            <div
+              class="w-[50px] h-[50px] bg-primary shadow-lg rounded-lg flex justify-center items-center"
+              *ngIf="!loadingPage"
+            >
+              <i
+                class="fa-solid fa-user text-[25px] text-white"
+                *ngIf="orderReceipt.taxi_order.passenger_photo === ''"
+              ></i>
+              <img
+                *ngIf="orderReceipt.taxi_order.passenger_photo !== ''"
+                [src]="orderReceipt.taxi_order.passenger_photo"
+                alt=""
+                class="w-full h-full object-contain"
+              />
+            </div>
+          </div>
+          <div class="w-1/2">
+            <p class="font-bold text-16">
+              <i class="fa-regular fa-user"></i>&nbsp;&nbsp;&nbsp;{{
+                loadingPage
+                  ? "LOADING...."
+                  : orderReceipt.taxi_order.passenger_full_name
+              }}
+            </p>
+
+            <p class="font-bold text-16">
+              <i class="fa-solid fa-phone"></i>&nbsp;&nbsp;&nbsp;{{
+                loadingPage
+                  ? "LOADING...."
+                  : orderReceipt.taxi_order.passenger_contact_number
+              }}
+            </p>
+          </div>
+        </div>
+        <div class="w-full divider-black-1 bg-black my-2"></div>
+        <p class="text-12 font-bold my-2">Driver Details :</p>
+        <div class="flex justify-evenly items-center">
+          <div class="flex justify-center items-center w-1/2">
+            <div
+              *ngIf="loadingPage"
+              class="w-[50px] h-[50px] flex justify-center items-center"
+            >
+              <div class="spinner"></div>
+            </div>
+
+            <div
+              class="w-[50px] h-[50px] bg-primary shadow-lg rounded-lg flex justify-center items-center"
+              *ngIf="!loadingPage"
+            >
+              <img
+                [src]="orderReceipt.driver.photo"
+                alt=""
+                class="w-full h-full object-contain"
+              />
+            </div>
+          </div>
+          <div class="w-1/2">
+            <p class="font-bold text-16">
+              <i class="fa-regular fa-user"></i>&nbsp;&nbsp;&nbsp;{{
+                loadingPage ? "LOADING...." : orderReceipt.driver.name
+              }}
+            </p>
+
+            <p class="font-bold text-16">
+              <i class="fa-solid fa-phone"></i>&nbsp;&nbsp;&nbsp;{{
+                loadingPage ? "LOADING...." : orderReceipt.driver.phone
+              }}
+            </p>
+          </div>
+        </div>
+        <div class="w-full divider-black-1 bg-black my-2"></div>
+        <p class="font-semibold text-16 mt-3">Status:</p>
+        <div class="flex justify-start items-start flex-col mt-2">
+          <div class="max-w-[100%] text-sm mx-auto p-2">
+            <div
+              class="flex items-center gap-1 justify-between"
+              *ngFor="let status of orderReceipt.statuses"
+            >
+              <div class="font-bold text-12">
+                {{ loadingPage ? "LOADING...." : status.name.toUpperCase() }}
+              </div>
+              <div class="h-[1px] flex-1 bg-gray-200"></div>
+              <div class="font-bold text-12">
+                ({{
+                  loadingPage
+                    ? "LOADING...."
+                    : datePipe.transform(
+                        status.created_at,
+                        "MMMM d, y, hh:mm:ss a"
+                      )
+                }})
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="w-full divider-black-1 bg-black mt-1"></div>
+        <div class="w-full">
+          <div class="max-w-[300px] text-sm mx-auto p-2">
+            <div class="my-3"></div>
+
+            <div class="flex items-center gap-1 justify-between">
+              <div>Pickup Distance</div>
+              <div class="h-[1px] flex-1 bg-gray-200"></div>
+              <div>
+                {{
+                  orderReceipt?.taxi_order?.trip_details?.pickup_distance ?? 0
+                    | number : ".0-2"
+                }}
+                KM
+              </div>
+            </div>
+            <div class="flex items-center gap-1 justify-between">
+              <div>Pickup Exceed</div>
+              <div class="h-[1px] flex-1 bg-gray-200"></div>
+              <div>
+                {{
+                  orderReceipt?.taxi_order?.trip_details?.pickup_exceed_km ?? 0
+                    | number : ".0-2"
+                }}
+                KM
+              </div>
+            </div>
+            <div class="flex items-center gap-1 justify-between">
+              <div>Trip Distance</div>
+              <div class="h-[1px] flex-1 bg-gray-200"></div>
+              <div>
+                {{
+                  orderReceipt?.taxi_order?.trip_details?.km_distance ?? 0
+                    | number : ".0-2"
+                }}
+                KM
+              </div>
+            </div>
+
+            <div class="my-3"></div>
+
+            <div class="flex items-center gap-1 justify-between">
+              <div>Trip Fee</div>
+              <div class="h-[1px] flex-1 bg-gray-200"></div>
+              <div>
+                {{
+                  (orderReceipt?.taxi_order?.trip_details
+                    ?.pickup_dropoff_subtotal ??
+                    0) +
+                    commissionNumber | number : ".0-0"
+                }}
+                PHP
+              </div>
+            </div>
+            <div class="flex items-center gap-1 justify-between">
+              <div>Pickup Fee</div>
+              <div class="h-[1px] flex-1 bg-gray-200"></div>
+              <div>
+                {{
+                  orderReceipt?.taxi_order?.trip_details?.pickup_charge_fee ?? 0
+                    | number : ".0-0"
+                }}
+                PHP
+              </div>
+            </div>
+            <div class="flex items-center gap-1 justify-between">
+              <div>Luggage Fee</div>
+              <div class="h-[1px] flex-1 bg-gray-200"></div>
+              <div>{{ orderReceipt?.taxi_order?.luggage_fee ?? 0 }} PHP</div>
+            </div>
+            <div class="my-3"></div>
+            <ng-container *ngIf="(orderReceipt?.tip ?? 0) != 0">
+              <div class="flex items-center gap-1 justify-between">
+                <div>Tip Amount</div>
+                <div class="h-[1px] flex-1 bg-gray-200"></div>
+                <div>{{ orderReceipt?.tip }} PHP</div>
+              </div>
+              <div class="my-3"></div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-full py-2 border border-black my-2 rounded-2xl">
+        <p class="text-12 text-center font-semibold">Total Payment:</p>
+        <p class="text-16 text-center font-bold">
+          ₱{{
+            loadingPage
+              ? "LOADING...."
+              : orderReceipt.total + commissionNumber ?? 0
+          }}
+        </p>
+      </div>
+      <ng-content></ng-content>
     </div>
   </div>
 </div>

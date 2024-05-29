@@ -237,3 +237,20 @@
 .selected {
   background-color: #4b84ae;
 }
+
+.loading {
+  height: 60px;
+  background: linear-gradient(90deg, #fffefe 25%, #b7b6b6 50%, #ffffff 75%);
+  background-size: 200% 100%;
+  animation: loadingAnimation 1.5s infinite;
+  border-radius: 10px;
+}
+
+@keyframes loadingAnimation {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

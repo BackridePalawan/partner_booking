@@ -35,7 +35,7 @@
             <label for="table-search" class="sr-only">Search</label>
             <div class="relative">
               <div
-                *ngIf="loadingpage && onsearch"
+                *ngIf="loadingpage && !onsearch"
                 class="absolute w-full h-full bg-gray-100 flex justify-center items-center rounded-lg"
               >
                 Loading...
@@ -60,6 +60,7 @@
               <input
                 type="text"
                 id="table-search"
+                (input)="searchOrderEvent($event)"
                 class="block p-2 ps-10 mb-[13px] text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Search for items"
               />
@@ -74,10 +75,10 @@
             class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
           >
             <tr>
-              <th scope="col" class="px-6 py-3 text-center">Order ID</th>
+              <th scope="col" class="px-6 py-3 text-center">Booking ID</th>
               <th scope="col" class="px-6 py-3 text-center">Customer Name</th>
               <th scope="col" class="px-6 py-3 text-center">Status</th>
-              <th scope="col" class="px-6 py-3 text-center">Order On</th>
+              <th scope="col" class="px-6 py-3 text-center">Book On</th>
               <th scope="col" class="px-6 py-3 text-center">Total</th>
               <th scope="col" class="px-6 py-3 text-center">Actions</th>
             </tr>
@@ -178,7 +179,10 @@
               <td
                 class="px-6 py-2 text-black font-semibold text-16 text-center"
               >
-                {{ item.total + item.affiliate_order.commission }}
+                {{
+                  item.total +
+                    (item.affiliate_order ? item.affiliate_order.commission : 0)
+                }}
               </td>
 
               <td
@@ -186,7 +190,10 @@
               >
                 <div class="flex justify-center">
                   <a
-                    [routerLink]="['/affiliate/book/details/', item.id]"
+                    [routerLink]="[
+                      '/affiliate/viewbooking/',
+                      item.id + '-' + item.code
+                    ]"
                     target="_blank"
                     class="px-2 py-2 bg-primary rounded-lg text-white hover:bg-secondary w-[50px]"
                   >
@@ -211,7 +218,7 @@
           class="w-full shadow-lg rounded-lg flex justify-center items-center bg-white"
         >
           <p class="font-bold text-16" [class.text-white]="loadingpage">
-            NO RESULTS OF "{{ rental_name }}"
+            NO RESULTS OF "{{ searchValue }}"
           </p>
         </div>
       </div>

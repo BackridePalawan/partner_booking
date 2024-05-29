@@ -16,6 +16,7 @@ import { switchMap } from 'rxjs/operators';
   styleUrl: './book.component.scss',
 })
 export class BookComponent implements OnInit {
+  imageUrl = 'assets/images/camera.jpg';
   title: string = '';
   commission: any;
   vehiclesAvailable: any;
@@ -23,11 +24,19 @@ export class BookComponent implements OnInit {
   book_order_details: any;
   loadingPage: boolean = true;
   driverSearchPage: boolean = false;
+  visible: boolean = false;
   connectingToDriver: boolean = false;
   openReciept: boolean = false;
   connectingMessage: string = 'Searching For Driver';
   driverDetails: any;
+  notes: string = '';
+  withLuggage: boolean = false;
+  rideCover: boolean = false;
+  showerCap: boolean = false;
   pollingSubscription: Subscription;
+  uploadedImage: File;
+  subtotal: number = 0;
+  total: number = 0;
   constructor(
     private api: ApiServices,
     private router: Router,
@@ -47,6 +56,7 @@ export class BookComponent implements OnInit {
   bookForm: FormGroup = this.formBuilder.group({
     fullname: ['', Validators.required],
     phone: ['', [Validators.required]],
+    passenger_photo: ['', [Validators.required]],
   });
 
   @ViewChild('locationPicker') locationPicker?: MapboxComponent;
@@ -152,6 +162,9 @@ export class BookComponent implements OnInit {
     this.locationPicker?.getCurrentPositionControl?.click();
   }
 
+  addNoteDialog() {
+    this.visible = true;
+  }
   count = 0;
 
   onAddressChange(data: {
@@ -215,13 +228,60 @@ export class BookComponent implements OnInit {
   }
 
   proceedPasuyo() {
+    if (
+      this.deliveryAddress.coords.lat == 0 &&
+      this.deliveryAddress.coords.lng == 0
+    ) {
+      Swal.fire({
+        title: 'Please Set The Affiliate Address',
+        icon: 'warning',
+        timer: 4000,
+      });
+      return;
+    }
+    if (
+      this.storeAddress.coords.lat == 0 &&
+      this.storeAddress.coords.lng == 0
+    ) {
+      Swal.fire({
+        title: 'Please Set The Destination Address',
+        icon: 'warning',
+        timer: 4000,
+      });
+      return;
+    }
+    this.loadingPage = true;
+    this.api
+      .getVehicleEstimatePrice(
+        `${this.deliveryAddress.coords.lat.toString()},${this.deliveryAddress.coords.lng.toString()}`,
+        `${this.storeAddress.coords.lat.toString()},${this.storeAddress.coords.lng.toString()}`
+      )
+      .subscribe({
+        next: (res: any) => {
+          console.log(res);
+          this.vehiclesAvailable = res;
+          this.loadingPage = false;
+        },
+        error: (error: HttpErrorResponse) => {
+          Swal.fire({
+            title: error.error.message,
+            icon: 'success',
+            timer: 5000,
+          });
+          this.loadingPage = false;
+        },
+      });
     this.pageNo = 3;
     console.log([this.deliveryAddress, this.storeAddress]);
   }
 
   selectedPautosVehicle: any;
   selectPautosVehicle(vehicle: any) {
+    console.log(vehicle);
     this.selectedPautosVehicle = vehicle;
+    this.subtotal = this.selectedPautosVehicle.total;
+    this.total = this.subtotal;
+    console.log(this.selectedPautosVehicle.total);
   }
 
   proceedBook() {
@@ -241,6 +301,15 @@ export class BookComponent implements OnInit {
           console.log(res);
           this.driverDetails = res;
           let details = {
+            note: this.notes,
+            has_luggage:
+              this.selectedPautosVehicle.slug !== 'motorcycle' &&
+              this.withLuggage
+                ? '1'
+                : '0',
+            // includes_ride_cover: this.rideCover ? '1' : '0',
+            // includes_shower_cap:
+            //   this.selectedPautosVehicle.slug == 'motorcycle' && this.showerCap,
             passenger_name: this.bookForm.get('fullname')?.value,
             passenger_phone: this.bookForm.get('phone')?.value,
             driver_id: this.driverDetails.available_driver.id,
@@ -257,12 +326,43 @@ export class BookComponent implements OnInit {
               lng: this.storeAddress.coords.lng,
               address: this.storeAddress.text + ' ' + this.storeAddress.subText,
             },
-            sub_total: this.driverDetails.pickup_dropoff_subtotal,
-            total: this.driverDetails.total,
+            sub_total: this.subtotal,
+            total: this.total,
           };
+
+          const formData: FormData = new FormData();
+
+          formData.append('note', details.note);
+          formData.append('passenger_name', details.passenger_name);
+          formData.append('passenger_phone', details.passenger_phone);
+          formData.append('driver_id', details.driver_id);
+          formData.append('payment_method_id', details.payment_method_id);
+          formData.append('vehicle_type_id', details.vehicle_type_id);
+          formData.append('has_luggage', details.has_luggage);
+
+          // Append pickup details
+          formData.append('pickup[lat]', details.pickup.lat.toString());
+          formData.append('pickup[lng]', details.pickup.lng.toString());
+          formData.append('pickup[address]', details.pickup.address);
+
+          // Append dropoff details
+          formData.append('dropoff[lat]', details.dropoff.lat.toString());
+          formData.append('dropoff[lng]', details.dropoff.lng.toString());
+          formData.append('dropoff[address]', details.dropoff.address);
+
+          formData.append('sub_total', details.sub_total.toString());
+          formData.append('total', details.total.toString());
+
+          if (this.uploadedImage) {
+            formData.append(
+              'passenger_photo',
+              this.uploadedImage,
+              this.uploadedImage.name
+            );
+          }
           console.log(details);
           this.driverSearchPage = false;
-          this.bookOrder(details);
+          this.bookOrder(formData);
         },
         error: (error: HttpErrorResponse) => {
           console.log(error);
@@ -273,74 +373,39 @@ export class BookComponent implements OnInit {
           this.driverSearchPage = false;
         },
       });
-
-    // this.api
-    //   .booking({
-    //     passenger_name: this.bookForm.get('fullname')?.value,
-    //     passenger_phone: this.bookForm.get('phone')?.value,
-    //     driver_id: ,
-    //     payment_method_id: '1',
-    //     vehicle_type_id: '2',
-    //     pickup: {
-    //       lat: this.deliveryAddress.coords.lat,
-    //       lng: this.deliveryAddress.coords.lng,
-    //       address:
-    //         this.deliveryAddress.text + ' ' + this.deliveryAddress.subText,
-    //     },
-    //     dropoff: {
-    //       lat: this.storeAddress.coords.lat,
-    //       lng: this.storeAddress.coords.lng,
-    //       address: this.storeAddress.text + ' ' + this.storeAddress.subText,
-    //     },
-    //   })
-    //   .subscribe({
-    //     next: (res) => {
-    //       console.log(res);
-    //     },
-    //     error: (error: HttpErrorResponse) => {
-    //       console.log(error.error);
-    //     },
-    //   });
-    // sub_total: subTotal,
-    // total: total,
-    // discount: checkout.discount,
-    // tip: tip,
-    // coupon_code: coupon?.code,
-    // vehicle_type: selectedWalkInVehicleType.encrypted,
-    // pickup_date: checkout.pickupDate,
-    // pickup_time: checkout.pickupTime,
-
-    //   "quantity": quantity,
-    //       "has_luggage": withLuggage ? "1" : "0",
-    //       "driver_id": AuthServices.currentUser.id,
-    //       "is_walk_in": "1",
-    //       "passenger_name": nameData?.toString() ??
-    //           LocalStorageService.prefs.getString("passenger_name"),
-    //       "passenger_phone": phoneData?.toString() ??
-    //           LocalStorageService.prefs.getString("passenger_phone"),
-    //       "payment_method_id": "1",
-    //       "vehicle_type_id": selectedWalkInVehicleType.id,
-    //       "pickup": {
-    //         "lat": pickupLocation.latitude,
-    //         "lng": pickupLocation.longitude,
-    //         "address": pickupLocation.address,
-    //       },
-    //       "dropoff": {
-    //         "lat": dropoffLocation.latitude,
-    //         "lng": dropoffLocation.longitude,
-    //         "address": dropoffLocation.address,
-    //       },
-    //       "sub_total": subTotal,
-    //       "total": total,
-    //       "discount": checkout.discount,
-    //       "tip": tip,
-    //       "coupon_code": coupon?.code,
-    //       "vehicle_type": selectedWalkInVehicleType.encrypted,
-    //       "pickup_date": checkout.pickupDate,
-    //       "pickup_time": checkout.pickupTime,
   }
 
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.uploadedImage = file;
+
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imageUrl = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+  // onFileSelected(event: any) {
+  //   const file = event.target.files[0];
+  //   if (file) {
+  //     this.bookForm!.patchValue({
+  //       passenger_photo: file,
+  //     });
+  //     this.bookForm!.get('passenger_photo')!.updateValueAndValidity();
+
+  //     const reader = new FileReader();
+
+  //     reader.onload = (e: any) => {
+  //       this.imageUrl = e.target.result;
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // }
+
   bookOrder(details: any) {
+    console.log(JSON.stringify(details));
     this.connectingToDriver = true;
     this.api.booking(details).subscribe({
       next: (res: any) => {
@@ -393,16 +458,35 @@ export class BookComponent implements OnInit {
     this.connectingMessage = 'Preparing for the Reciept';
     console.log({
       order_id: this.bookorder.order.id,
-      commission: this.commission,
     });
     this.api
       .addAffiliateBook({
         order_id: this.bookorder.order.id,
-        commission: this.commission,
       })
       .subscribe({
         next: (res) => {
           this.openReciept = true;
+          var phonenumber =
+            this.bookForm.get('phone')?.value.slice(0, 2) == '09'
+              ? '+63' + this.bookForm.get('phone')?.value.slice(1)
+              : this.bookForm.get('phone')?.value;
+          this.api
+            .sendBookingDetails({
+              booking_link: `http://localhost:4200/affiliate/viewbooking/${this.bookorder.order.id}-${this.bookorder.order.code}`,
+              phone: phonenumber,
+            })
+            .subscribe({
+              next: (res) => {
+                console.log(res);
+              },
+              error: (error: HttpErrorResponse) => {
+                console.log(error.error.message);
+              },
+            });
+          // this.router.navigate([
+          //   `affiliate/viewbooking/${this.bookorder.order.id}-${this.bookorder.order.code}`,
+          // ]);
+
           this.connectingToDriver = false;
         },
         error: (error: HttpErrorResponse) => {
@@ -447,5 +531,99 @@ export class BookComponent implements OnInit {
     if (this.pollingSubscription) {
       this.pollingSubscription.unsubscribe();
     }
+  }
+
+  searchResults: any[] = [];
+  searchTimeoutMilliseconds = 500;
+  searchTimeout: any;
+  onSearchAddress(e: any) {
+    clearTimeout(this.searchTimeout);
+    this.searchTimeout = setTimeout(() => {
+      console.log(e, e.target.value);
+      if (e.target.value === '') {
+        this.searchResults = [];
+        return;
+      }
+      this.api
+        .getGeocoder()
+        .reverseOriginal(e.target.value)
+        .then((res: any) => {
+          console.log('geocode', res);
+          this.searchResults = res.data;
+        });
+    }, this.searchTimeoutMilliseconds);
+  }
+
+  selectAddress(address: any) {
+    // this.address = {
+    //   text: (address.formatted_address + '').split(', ', 2)[0],
+    //   subText: (address.formatted_address + '').split(', ', 2)[1],
+    //   coords: {
+    //     lat: address.geometry.location.lat,
+    //     lng: address.geometry.location.lng,
+    //   },
+    // };
+    this.locationPicker?.mapBox.panTo([
+      address.geometry.location.lng,
+      address.geometry.location.lat,
+    ]);
+    this.searchResults = [];
+  }
+
+  addNotes(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+    console.log(inputElement.value);
+    this.notes = inputElement.value;
+  }
+
+  changeLuggage(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    this.withLuggage = inputElement.checked;
+    if (this.selectedPautosVehicle.slug == 'motorcycle') {
+      Swal.fire({
+        title: 'Luggage is not available for motorcycles.',
+        icon: 'error',
+        timer: 5000,
+      });
+      this.withLuggage = false;
+      console.log(this.withLuggage);
+      return;
+    }
+  }
+
+  changeShower(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    this.showerCap = inputElement.checked;
+    if (this.selectedPautosVehicle.slug != 'motorcycle') {
+      Swal.fire({
+        title: 'Luggage is not available for motorcycles.',
+        icon: 'error',
+        timer: 5000,
+      });
+      this.showerCap = false;
+      console.log(this.showerCap);
+      return;
+    }
+  }
+
+  withLagguage(event: any) {
+    const inputElement = event.target as HTMLInputElement;
+    console.log(inputElement.checked);
+    this.withLuggage = inputElement.checked;
+  }
+
+  anotherBook() {
+    this.pageNo = 1;
+    this.openReciept = false;
+
+    this.bookForm.patchValue({
+      fullname: '',
+      phone: '',
+      passenger_photo: '',
+    });
+    this.notes = '';
+    this.imageUrl = 'assets/images/camera.jpg';
+    this.uploadedImage;
+    console.log(this.uploadedImage);
   }
 }

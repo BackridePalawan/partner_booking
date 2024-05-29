@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ApiServices } from '../../services/api-services';
 import { HttpErrorResponse } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-receipt',
@@ -13,7 +14,8 @@ export class ReceiptComponent implements OnInit {
   @Input() commissionNumber: number;
   totalNumber: number;
   paymentTotal: any;
-  constructor(private apiService: ApiServices) {}
+  loadingPage = false;
+  constructor(private apiService: ApiServices, public datePipe: DatePipe) {}
 
   ngOnInit(): void {
     console.log(this.orderReceipt);

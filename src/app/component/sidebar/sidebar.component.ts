@@ -30,6 +30,7 @@ export class SidebarComponent implements OnInit {
   getUserDetails() {
     this.apiService.getUserDetails().subscribe({
       next: (res) => {
+        console.log('userDetails', res);
         this.userDetail = res;
         this.is_active = this.userDetail.user.is_active;
         console.log(this.is_active);

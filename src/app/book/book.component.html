@@ -19,7 +19,7 @@
       >
         <div class="px-3 pt-4 pb-10">
           <div class="text-3xl text-center drop-shadow-2xl font-bold">
-            Book Customer
+            Book a ride
           </div>
         </div>
       </div>
@@ -138,21 +138,37 @@
       [ngClass]="{ '!hidden': pageNo != 2 }"
     >
       <div
-        class="bg-primary-dark px-3 py-2 flex justify-start gap-1 items-center overflow-ellipsis"
+        class="bg-primary-dark px-3 py-2 flex justify-start gap-1 items-center overflow-ellipsis relative"
       >
         <i
           (click)="pageNo = 1"
           class="fa fa-arrow-left text-white cursor-pointer fa-fw fa-lg"
         ></i>
         <div
-          class="flex-1 cursor-pointer rounded-2xl shadow-highlight px-3 py-2 m-3 bg-white text-black flex justify-start gap-3 items-center"
+          class="flex-1 cursor-pointer rounded-2xl shadow-highlight px-3 py-2 m-3 bg-white text-black flex justify-start gap-3 items-center relative"
         >
           <i class="fa fa-map-marker-alt fa-fw text-blue-500"></i>
           <input
             type="search"
             [placeholder]="targetAddressPick.placeholderText"
+            (input)="onSearchAddress($event)"
             class="outline-none w-full"
           />
+          <div
+            class="w-full h-[300px] bg-primary rounded-2xl absolute top-full left-0 mt-2 z-[9999999999999] overflow-y-scroll p-4"
+            *ngIf="searchResults.length > 0"
+          >
+            <p
+              class="px-3 mb-2 shadow-lg rounded-2xl bg-white py-3 hover:!bg-[11111122]"
+              *ngFor="let result of searchResults"
+              (click)="selectAddress(result)"
+            >
+              <i class="fa-solid fa-location-pin text-red animate-jump"></i
+              >&nbsp;&nbsp;<span class="text-[16px] font-bold cursor-pointe">
+                {{ result.formatted_address }}</span
+              >
+            </p>
+          </div>
         </div>
       </div>
       <!-- <div class="flex-1" id="mapbox"></div> -->
@@ -183,13 +199,23 @@
           </div>
           <div
             *ngIf="targetAddressPick.target == 'delivery'"
-            class="cursor-pointer border-b px-3 py-2 pb-4 mb-2 text-black flex justify-start gap-3 items-center"
+            class="cursor-pointer border-b px-3 py-2 pb-4 mb-2 text-black flex justify-start gap-3 items-center w-full"
           >
-            <i class="fa fa-pencil fa-fw text-primary-accent"></i>
+            <i
+              class="fa fa-pencil fa-fw text-primary-accent"
+              (click)="addNoteDialog()"
+            ></i>
             <div>
-              <div class="text-xs font-semibold">
+              <!-- <div class="text-xs font-semibold">
                 Add pickup notes for driver
-              </div>
+              </div> -->
+
+              <input
+                type="text"
+                class="px-3 w-[300px] rounded-2xl w-full"
+                placeholder="Add pickup notes for driver"
+                (input)="addNotes($event)"
+              />
             </div>
           </div>
           <button
@@ -224,18 +250,39 @@
       />
       <div>
         <div
-          class="relative bg-[#4c6c33] min-h-[200px] flex justify-center items-center bg-center bg-cover bg-no-repeat text-white"
+          class="relative bg-[#4c6c33] min-h-[124px] flex justify-center items-center bg-center bg-cover bg-no-repeat text-white"
         >
-          <div class="px-3 pt-4 pb-10">
+          <i
+            (click)="pageNo = 1"
+            class="fa fa-arrow-left text-white cursor-pointer fa-fw fa-lg my-auto z-[9999]"
+          ></i>
+          <div class="px-3 pt-[2.5rem] pb-10 w-full">
             <div class="text-3xl text-center drop-shadow-2xl font-bold">
-              Book Customer
+              Book a ride
             </div>
           </div>
         </div>
         <div
           class="px-4 py-4 flex flex-col gap-3 justify-center shadow-[0px_0px_5px_#00000044]"
         >
-          <form (ngSubmit)="proceedBook()" [formGroup]="bookForm">
+          <form (ngSubmit)="proceedBook()" [formGroup]="bookForm" class="mt-6">
+            <p class="text-md my-3 block font-semibold text-gray-800">
+              Upload A Passenger Photo
+            </p>
+            <label for="passenger_photo">
+              <img
+                [src]="imageUrl"
+                alt="passenger_photo"
+                class="h-[100px] w-[100px] shadow-lg rounded-2xl border-solid border-black border-[2px]"
+              />
+            </label>
+            <input
+              type="file"
+              id="passenger_photo"
+              required=""
+              (change)="onFileSelected($event)"
+              class="hidden"
+            />
             <label
               for="text"
               class="text-md my-3 block font-semibold text-gray-800"
@@ -261,34 +308,68 @@
               class="w-full rounded-lg bg-gray-100 px-4 py-2 focus:outline-none shadow-lg border border-solid border-[#00000075]"
             />
 
-            <div class="font-bold">Choose a Vehicle</div>
+            <label
+              for="text"
+              class="text-md my-3 block font-semibold text-gray-800"
+              >Email Address (optional)</label
+            >
+            <input
+              type="email"
+              id="email"
+              required=""
+              class="w-full rounded-lg bg-gray-100 px-4 py-2 focus:outline-none shadow-lg border border-solid border-[#00000075]"
+            />
+            <div
+              class="w-full py-3 flex gap-2 items-center"
+              *ngIf="
+                selectedPautosVehicle?.slug === 'tricycle' ||
+                selectedPautosVehicle?.slug === 'car'
+              "
+            >
+              <input
+                type="checkbox"
+                name=""
+                id=""
+                (change)="withLagguage($event)"
+              />
+              <p class="font-bold text-16">With lagguage over 20klg</p>
+              <div
+                class="h-[25px] w-[25px] rounded-full border border-black text-center"
+              >
+                <i class="fa-solid fa-question"></i>
+              </div>
+            </div>
+
+            <div class="font-bold mt-5">Choose a Vehicle</div>
 
             <div class="flex justify-center gap-3">
               <div
                 *ngFor="let v of vehiclesAvailable"
                 (click)="selectPautosVehicle(v)"
-                class="rounded-2xl bg-lime-green md:w-[200px] flex gap-2 p-2 md:flex-col justify-between items-center shadow-lg border-solid my-4"
+                class="rounded-2xl bg-lime-green md:w-[200px] flex gap-2 p-2 md:flex-col justify-between items-center shadow-lg border-solid my-4 border-[3px] hover:bg-blue-200"
                 [ngClass]="{
                   '!bg-blue-200': selectedPautosVehicle?.slug == v.slug
                 }"
               >
                 <div class="rounded-2xl bg-lime-green flex gap-4 items-center">
                   <div
-                    class="h-[40px] w-[40px] bg-primary rounded-lg flex justify-center items-center"
+                    class="h-[40px] w-[40px] bg-white rounded-lg flex justify-center items-center p-1 shadow-lg"
                   >
-                    <i
-                      class="fa-solid fa-motorcycle text-white text-16"
-                      *ngIf="v.slug == 'motorcycle'"
-                    ></i>
-                    <i
-                      class="fa-solid fa-car text-white text-16"
-                      *ngIf="v.slug == 'car'"
-                    ></i>
-                    <i
-                      class="fa-solid fa-tricycle text-white text-16"
-                      *ngIf="v.slug == 'tricycle'"
-                    ></i>
+                    <img
+                      [src]="
+                        v.slug == 'motorcycle'
+                          ? '../../assets/ride.png'
+                          : v.slug == 'tricycle'
+                          ? '../../assets/tricycle.png'
+                          : v.slug == 'car'
+                          ? '../../assets/car.png'
+                          : ''
+                      "
+                      alt=""
+                      class="h-full w-full object-contain rounded-lg"
+                    />
                   </div>
+
                   <div>{{ v?.name }}</div>
                 </div>
                 <div class="flex flex-col justify-between items-">
@@ -313,13 +394,44 @@
                     >
                   </p>
                 </div>
+                <div class="w-full bg-secondary rounded-2xl">
+                  <p class="text-start text-12 text-white py-2 px-3">
+                    Estimated Price:
+                    <span class="font-bold text-16">₱{{ v?.total }}</span>
+                  </p>
+                </div>
               </div>
             </div>
+
+            <!-- <p class="mt-4 flex items-center justify-start">
+              <input type="checkbox" name="" id="insurance" />
+              <span class="mx-3 font-bold"
+                ><label for="insurance">Insurance</label></span
+              >
+            </p>
+            <p class="mt-4 flex items-center justify-start">
+              <input type="checkbox" name="" id="insurance" />
+              <span class="mx-3 font-bold"
+                ><label for="insurance">Shower Cap</label></span
+              >
+            </p>
+            <p class="mt-4 flex items-center justify-start">
+              <input
+                type="checkbox"
+                name=""
+                id="insurance"
+                [checked]="withLuggage"
+                (change)="changeLuggage($event)"
+              />
+              <span class="mx-3 font-bold"
+                ><label for="insurance">Has Luggage</label></span
+              >
+            </p> -->
 
             <button
               type="submit"
               [disabled]="isLoading"
-              class="bg-primary-dark text-white px-4 font-semibold py-3 rounded-lg w-full"
+              class="bg-primary-dark text-white px-4 font-semibold py-3 rounded-lg w-full mt-4"
               [ngClass]="{ '!bg-gray-500': isLoading }"
             >
               <span>Book Now</span>
@@ -336,5 +448,14 @@
     *ngIf="openReciept"
     [orderReceipt]="book_order_details"
     [commissionNumber]="commission"
-  ></app-receipt>
+  >
+    <div
+      class="w-full py-2 border border-black my-2 rounded-2xl bg-primary"
+      (click)="anotherBook()"
+    >
+      <p class="text-12 text-center font-semibold text-white">
+        Book Another Customer
+      </p>
+    </div>
+  </app-receipt>
 </div>
