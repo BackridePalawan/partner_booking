@@ -26,6 +26,9 @@ export class NavHeaderComponent implements OnInit {
   showDropdown = false;
   submitted = false;
   visible: boolean = false;
+  is_subAffilliate: boolean = false;
+  subAffilliateFee: string = '0';
+  subAffilliateEarningPercentage: string = '0%';
   visible2: boolean = false;
 
   buttonText = 'Change';
@@ -53,6 +56,7 @@ export class NavHeaderComponent implements OnInit {
   ngOnInit(): void {
     this.startPolling();
     this.getUserDetails();
+    this.getSubAffiliateDetails();
   }
 
   show(notif: any) {
@@ -93,13 +97,11 @@ export class NavHeaderComponent implements OnInit {
       .subscribe({
         next: (res: any) => {
           // console.log('fetching', res);
-          const timenow = this.datePipe.transform(new Date(), 'HH:mm:ss');
+          const timenow = this.datePipe.transform(new Date(), 'HH:mm');
           this.data = res.data.data;
           this.totalNotif = res.data.total;
           this.data.filter((ele) => {
-            if (
-              timenow == this.datePipe.transform(ele.created_at, 'HH:mm:ss')
-            ) {
+            if (timenow == this.datePipe.transform(ele.created_at, 'HH:mm')) {
               this.show(ele);
             }
           });
@@ -222,5 +224,27 @@ export class NavHeaderComponent implements OnInit {
         this.route.navigate(['/']);
       }
     });
+  }
+
+  getSubAffiliateDetails() {
+    this.api.getSubAffiliateDetails().subscribe({
+      next: (res: any) => {
+        this.is_subAffilliate = res.is_subAffilliate;
+        console.log('this is sub affiliate', res);
+        if (this.is_subAffilliate) {
+          this.subAffilliateFee = this.transform(res.details.sub_affiliate_fee);
+          this.subAffilliateEarningPercentage = `${res.details.earning_percentage}%`;
+          return;
+        }
+
+        console.log(res);
+      },
+      error: (error: HttpErrorResponse) => {},
+    });
+  }
+
+  transform(value: number): string {
+    if (value == null) return '';
+    return value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
   }
 }

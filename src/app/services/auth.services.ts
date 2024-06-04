@@ -21,12 +21,14 @@ export class AuthGuardServices implements CanActivate {
             this.responseuser = response;
             console.log('hello');
             this.role = this.responseuser['user']['role_name'];
-            if (this.role !== 'affiliate-partner') {
+            if (this.role === 'sub-affiliate-partner') {
+              resolve(true);
+            } else if (this.role === 'affiliate-partner') {
+              resolve(true);
+            } else {
               this.router.navigate(['/']);
               resolve(false);
             }
-
-            resolve(true);
           },
           error: (error: HttpErrorResponse) => {
             this.router.navigate(['/login']);

@@ -218,6 +218,7 @@ export class WeeklyStatisticComponent {
   }
 
   getEarnings(page: string) {
+    console.log('length', this.weeks.length - 1);
     this.loadingpage = true;
     if (typeof localStorage !== 'undefined') {
       var token: any = localStorage.getItem('token');
@@ -231,7 +232,7 @@ export class WeeklyStatisticComponent {
         )
         .subscribe({
           next: (res: any) => {
-            console.log(res);
+            console.log('responseweekly', res);
             // console.log(res['total']);
             this.displayedItems = res['data'];
             // this.from = res['from'] ?? '';

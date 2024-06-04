@@ -84,6 +84,30 @@
           <span>Dashboard</span>
         </a>
       </li>
+      <li class="px-4 py-2 hover:bg-gray-700 rounded relative">
+        <div
+          class="w-full h-full absolute bg-[#06060663] not_active rounded flex justify-end items-center"
+          *ngIf="!is_active"
+        >
+          <i class="fa-solid fa-lock text-[20px] text-white px-3"></i>
+        </div>
+        <a routerLink="/affiliate/book/customer" class="flex items-center">
+          <i class="fa-solid fa-address-book text-[24px] mr-2"></i>
+          <span>Book a ride</span>
+        </a>
+      </li>
+      <li class="px-4 py-2 hover:bg-gray-700 rounded relative">
+        <div
+          class="w-full h-full absolute bg-[#06060663] not_active rounded flex justify-end items-center"
+          *ngIf="!is_active"
+        >
+          <i class="fa-solid fa-lock text-[20px] text-white px-3"></i>
+        </div>
+        <a [routerLink]="['/affiliate/drivers']" class="flex items-center">
+          <i class="fa-solid fa-users text-[24px] mr-2"></i>
+          <span>Drivers</span>
+        </a>
+      </li>
       <li class="px-4 py-2 hover:bg-gray-700 rounded">
         <a routerLink="/affiliate/notifications" class="flex items-center">
           <i class="fa-solid fa-bell text-[24px] mr-2"></i>
@@ -125,12 +149,18 @@
         >
           <i class="fa-solid fa-lock text-[20px] text-white px-3"></i>
         </div>
-        <a routerLink="/affiliate/book/customer" class="flex items-center">
-          <i class="fa-solid fa-address-book text-[24px] mr-2"></i>
-          <span>Book a ride</span>
+        <a
+          [routerLink]="['/affiliate/customers', 'all']"
+          class="flex items-center"
+        >
+          <i class="fa-solid fa-bars text-[24px] mr-2"></i>
+          <span>Transactions</span>
         </a>
       </li>
-      <li class="px-4 py-2 hover:bg-gray-700 rounded relative">
+      <li
+        class="px-4 py-2 hover:bg-gray-700 rounded relative"
+        [class.hidden]="hidden"
+      >
         <div
           class="w-full h-full absolute bg-[#06060663] not_active rounded flex justify-end items-center"
           *ngIf="!is_active"
@@ -138,11 +168,11 @@
           <i class="fa-solid fa-lock text-[20px] text-white px-3"></i>
         </div>
         <a
-          [routerLink]="['/affiliate/customers', 'all']"
+          [routerLink]="['/affiliate/sub-affiliates']"
           class="flex items-center"
         >
-          <i class="fa-solid fa-bars text-[24px] mr-2"></i>
-          <span>Transactions</span>
+          <i class="fa-solid fa-users-line text-[24px] mr-2"></i>
+          <span>Sub Affiliate</span>
         </a>
       </li>
     </ul>

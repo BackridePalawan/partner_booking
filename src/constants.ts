@@ -135,6 +135,7 @@ export const comingSoonGuides: {
     url: '/user-guide/book-a-ride',
   },
 ];
+
 const constants = {
   guides,
   comingSoonGuides,
@@ -151,7 +152,7 @@ const constants = {
   prod: false,
   apiUrl: 'https://backrideph.online/api/',
   mapboxToken:
-    'pk.eyJ1IjoidmlyZ2VudCIsImEiOiJjbHU5NmQ4aWEwN2h0MnFta2pxMjE0NHk2In0.hK2hP8rttZo5LGYUiCFryQ',
+    'pk.eyJ1IjoidmJhY2tyaWRlcGFsIiwiYSI6ImNsd3J2aG45NzAwbDMybG9rdThpbjN4eHIifQ.B2VZl_4pKS-bmCP3-pgogw',
 };
 
 export default constants;

@@ -43,6 +43,10 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { AuthGuardServices } from './services/auth.services';
 import { isActiveServices } from './services/isActive.services';
+import { DriversComponent } from './drivers/drivers.component';
+import { DriverDetailsComponent } from './drivers/driver-details/driver-details.component';
+import { SubAffiliateComponent } from './sub-affiliate/sub-affiliate.component';
+import { ModalComponent } from './component/modal/modal.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -67,6 +71,10 @@ import { isActiveServices } from './services/isActive.services';
     ViewBookingComponent,
     CancelBookingComponent,
     NotificationsComponent,
+    DriversComponent,
+    DriverDetailsComponent,
+    SubAffiliateComponent,
+    ModalComponent,
   ],
   imports: [
     BrowserModule,

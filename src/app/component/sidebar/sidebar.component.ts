@@ -15,6 +15,7 @@ export class SidebarComponent implements OnInit {
   constructor(private apiService: ApiServices) {}
   userDetail: any;
   is_active: boolean = false;
+  hidden: boolean = true;
   loadData: boolean = true;
   ngOnInit(): void {
     this.getUserDetails();
@@ -33,6 +34,7 @@ export class SidebarComponent implements OnInit {
         console.log('userDetails', res);
         this.userDetail = res;
         this.is_active = this.userDetail.user.is_active;
+        this.hidden = this.userDetail.user.role_name == 'sub-affiliate-partner';
         console.log(this.is_active);
         localStorage.setItem('branch_id', this.userDetail.user.branch_id);
         this.loadData = false;

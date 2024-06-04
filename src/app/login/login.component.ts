@@ -38,20 +38,17 @@ export class LoginComponent {
         this.loggingIn({
           phone: '+63' + this.form.get('user')?.value.slice(1),
           password: this.form.get('password')?.value,
-          role: 'affiliate-partner',
         });
       } else {
         this.loggingIn({
           phone: this.form.get('user')?.value,
           password: this.form.get('password')?.value,
-          role: 'affiliate-partner',
         });
       }
     } else {
       this.loggingIn({
         email: this.form.get('user')?.value,
         password: this.form.get('password')?.value,
-        role: 'affiliate-partner',
       });
     }
   }
@@ -59,8 +56,10 @@ export class LoginComponent {
   loggingIn(credentials: any) {
     this.apiService.login(credentials).subscribe({
       next: (res: any) => {
-        console.log(res);
+        console.log('login', res);
         localStorage.setItem('token', res.token);
+        localStorage.setItem('role', res.user.role_name);
+        // localStorage.setItem('token', res.token);
         this.route.navigate(['/affiliate']);
 
         this.loadingPage = false;

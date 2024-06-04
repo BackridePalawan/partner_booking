@@ -1,3 +1,4 @@
+<app-loading-component *ngIf="loading"></app-loading-component>
 <app-sidebar></app-sidebar>
 <div class="md:ml-64">
   <app-nav-header [title]="title"></app-nav-header>
@@ -5,29 +6,6 @@
     <div class="w-full px-3 py-4 md:mt-[96px] mt-[50px] shadow-lg rounded-lg">
       <div class="relative overflow-x-auto shadow-md rounded-lg">
         <div class="flex justify-end items-center gap-4">
-          <div>
-            <form class="max-w-sm mx-auto">
-              <label
-                for="countries"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white hidden"
-                >Select an option</label
-              >
-              <select
-                id="status"
-                (change)="statusChange($event)"
-                [value]="filtervalue"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              >
-                <option value="all">Any</option>
-                <option value="pending">Pending</option>
-                <option value="preparing">Preparing</option>
-                <option value="ready">Ready</option>
-                <option value="enroute">Enroute</option>
-                <option value="delivered">Delivered</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
-            </form>
-          </div>
           <div
             class="flex flex-column flex-row flex-wrap space-y-4 space-y-0 items-center justify-end"
             *ngIf="displayedItems.length != 0 || !onsearch"
@@ -60,7 +38,7 @@
               <input
                 type="text"
                 id="table-search"
-                (input)="searchOrderEvent($event)"
+                (input)="searchDriverEvent($event)"
                 class="block p-2 ps-10 mb-[13px] text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Search for items"
               />
@@ -75,12 +53,10 @@
             class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
           >
             <tr>
-              <th scope="col" class="px-6 py-3 text-center">Booking ID</th>
-              <th scope="col" class="px-6 py-3 text-center">Executed By</th>
-              <th scope="col" class="px-6 py-3 text-center">Customer Name</th>
+              <th scope="col" class="px-6 py-3 text-center">Driver Id</th>
+              <th scope="col" class="px-6 py-3 text-center">Driver Name</th>
               <th scope="col" class="px-6 py-3 text-center">Status</th>
-              <th scope="col" class="px-6 py-3 text-center">Book On</th>
-              <th scope="col" class="px-6 py-3 text-center">Total</th>
+              <th scope="col" class="px-6 py-3 text-center">Vehicle</th>
               <th scope="col" class="px-6 py-3 text-center">Actions</th>
             </tr>
           </thead>
@@ -100,31 +76,7 @@
               <td class="px-6 py-2 text-black font-bold text-16 text-center">
                 Loading .....
               </td>
-              <td class="px-6 py-2 text-black font-bold text-16 text-center">
-                Loading .....
-              </td>
-              <td class="px-6 py-2 text-black font-bold text-16 text-center">
-                Loading .....
-              </td>
-            </tr>
-            <tr
-              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-            >
-              <td class="px-6 py-2 text-black font-bold text-16 text-center">
-                Loading .....
-              </td>
-              <td class="px-6 py-2 text-black font-bold text-16 text-center">
-                Loading .....
-              </td>
-              <td class="px-6 py-2 text-black font-bold text-16 text-center">
-                Loading .....
-              </td>
-              <td class="px-6 py-2 text-black font-bold text-16 text-center">
-                Loading .....
-              </td>
-              <td class="px-6 py-2 text-black font-bold text-16 text-center">
-                Loading .....
-              </td>
+
               <td class="px-6 py-2 text-black font-bold text-16 text-center">
                 Loading .....
               </td>
@@ -144,9 +96,27 @@
               <td class="px-6 py-2 text-black font-bold text-16 text-center">
                 Loading .....
               </td>
+
               <td class="px-6 py-2 text-black font-bold text-16 text-center">
                 Loading .....
               </td>
+            </tr>
+            <tr
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+            >
+              <td class="px-6 py-2 text-black font-bold text-16 text-center">
+                Loading .....
+              </td>
+              <td class="px-6 py-2 text-black font-bold text-16 text-center">
+                Loading .....
+              </td>
+              <td class="px-6 py-2 text-black font-bold text-16 text-center">
+                Loading .....
+              </td>
+              <td class="px-6 py-2 text-black font-bold text-16 text-center">
+                Loading .....
+              </td>
+
               <td class="px-6 py-2 text-black font-bold text-16 text-center">
                 Loading .....
               </td>
@@ -162,50 +132,47 @@
               </td>
               <td
                 class="px-6 py-2 text-black font-semibold text-16 text-center"
+                [class.text-primary]="item.is_online == 1"
               >
-                {{ item.sub_affiliate_order ? "Sub-Affiliate" : "Affiliate" }}
+                {{ item.name }}
               </td>
               <td
                 class="px-6 py-2 text-black font-semibold text-16 text-center"
               >
-                {{ item.taxi_order.passenger_full_name }}
+                {{ item.is_online == 1 ? "Online" : "Offline" }}
               </td>
               <td
                 class="px-6 py-2 text-black font-semibold text-16 text-center"
               >
-                {{ item.status }}
-              </td>
-              <td
-                class="px-6 py-2 text-black font-semibold text-16 text-center"
-              >
-                {{
-                  datePipe.transform(item.created_at, "MMMM d, y, hh:mm:ss a")
-                }}
-              </td>
-              <td
-                class="px-6 py-2 text-black font-semibold text-16 text-center"
-              >
-                {{
-                  item.total +
-                    (item?.affiliate_order?.commission ??
-                      item?.sub_affiliate_order?.fix_markup_commission ??
-                      0)
-                }}
+                {{ item.vehicle.car_model.name }} ({{
+                  item.vehicle.vehicle_type.name
+                }})
               </td>
 
               <td
                 class="px-6 py-2 text-black font-semibold text-16 text-center"
               >
-                <div class="flex justify-center">
+                <div class="flex justify-center gap-2">
                   <a
-                    [routerLink]="[
-                      '/affiliate/viewbooking/',
-                      item.id + '-' + item.code
-                    ]"
+                    [routerLink]="['/affiliate/driver/details', item.id]"
                     target="_blank"
                     class="px-2 py-2 bg-primary rounded-lg text-white hover:bg-secondary w-[50px]"
                   >
                     <i class="fa-solid fa-eye"></i>
+                  </a>
+                  <p
+                    *ngIf="item.is_active == 1"
+                    class="px-2 py-2 bg-red rounded-lg text-white hover:bg-secondary w-[50px]"
+                    (click)="deactivateDriver(item.id)"
+                  >
+                    <i class="fa-solid fa-xmark"></i>
+                  </p>
+                  <a
+                    *ngIf="item.is_active == 0"
+                    class="px-2 py-2 bg-primary rounded-lg text-white hover:bg-secondary w-[50px]"
+                    (click)="activateDriver(item.id)"
+                  >
+                    <i class="fa-solid fa-check"></i>
                   </a>
                 </div>
               </td>

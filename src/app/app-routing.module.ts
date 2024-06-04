@@ -15,6 +15,9 @@ import { ViewBookingComponent } from './view-booking/view-booking.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { AuthGuardServices } from './services/auth.services';
 import { isActiveServices } from './services/isActive.services';
+import { DriversComponent } from './drivers/drivers.component';
+import { DriverDetailsComponent } from './drivers/driver-details/driver-details.component';
+import { SubAffiliateComponent } from './sub-affiliate/sub-affiliate.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -74,6 +77,21 @@ const routes: Routes = [
       {
         path: 'viewbooking/:code',
         component: ViewBookingComponent,
+        canActivate: [isActiveServices],
+      },
+      {
+        path: 'drivers',
+        component: DriversComponent,
+        canActivate: [isActiveServices],
+      },
+      {
+        path: 'driver/details/:driverId',
+        component: DriverDetailsComponent,
+        canActivate: [isActiveServices],
+      },
+      {
+        path: 'sub-affiliates',
+        component: SubAffiliateComponent,
         canActivate: [isActiveServices],
       },
       { path: '', component: DashboardComponent },

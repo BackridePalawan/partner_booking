@@ -202,7 +202,9 @@ export class RegisterComponent implements OnInit {
           this.route.navigate(['/affiliate']);
           this.loadingPage = false;
         },
-        error: (error: HttpErrorResponse) => {},
+        error: (error: HttpErrorResponse) => {
+          console.log(error.error.message);
+        },
       });
   }
 

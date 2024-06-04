@@ -31,9 +31,23 @@
 
       <div
         *ngIf="showDropdown"
-        class="absolute right-0 mt-6 w-64 bg-white shadow-lg rounded-lg overflow-hidden z-10"
+        class="absolute right-0 mt-6 w-[18rem] bg-white shadow-lg rounded-lg overflow-hidden z-10"
       >
         <ul>
+          <li
+            class="px-4 py-2 border-b last:border-b-0"
+            [class.hidden]="!is_subAffilliate"
+          >
+            <i class="fa-solid fa-percent"></i>&nbsp;&nbsp;Earning Percentage :
+            {{ subAffilliateEarningPercentage }}
+          </li>
+          <li
+            class="px-4 py-2 border-b last:border-b-0"
+            [class.hidden]="!is_subAffilliate"
+          >
+            <i class="fa-solid fa-money-bill"></i>&nbsp;&nbsp;Sub Affiliate Fee
+            : ₱{{ subAffilliateFee }}
+          </li>
           <li
             class="px-4 py-2 border-b last:border-b-0 hover:bg-secondary hover:text-white"
             (click)="showDialog()"

@@ -6,13 +6,14 @@ import { HttpErrorResponse } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { error } from 'node:console';
 import { Subscription, switchMap, timer } from 'rxjs';
-
+import { BehaviorSubject } from 'rxjs';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent implements OnInit {
+  isMonthlyFee = localStorage.getItem('role') === 'sub-affiliate-partner';
   isPopupOpen: boolean = false;
   visible2: boolean = false;
   cancelClick: number = 0;
@@ -20,6 +21,7 @@ export class DashboardComponent implements OnInit {
   pollingSubscription2: Subscription;
   monthAndFeepolling: Subscription;
   chartPollingSubscription: Subscription;
+  getMonthEarnPollingSubscription: Subscription;
   cantBeCancel = ['enroute', 'failed', 'cancelled', 'delivered'];
   title: string = 'Dashboard';
   userDetail: any;
@@ -57,10 +59,20 @@ export class DashboardComponent implements OnInit {
   bookingIDtoCancel = 0;
   thisMonthEarn = 0;
   thisMonthFee = 0;
+  thisSubAffiliateEarnFee = 0;
+  thisMonthAdminFee = 0;
   searchValue = '';
 
   selectedDetails: any;
   currentMonth: any;
+
+  private earningsSubject = new BehaviorSubject<number>(0);
+  private chartDataSubject = new BehaviorSubject<any[]>([]);
+  private loadingSubject = new BehaviorSubject<boolean>(true);
+
+  todays_earnings$ = this.earningsSubject.asObservable();
+  chartdata$ = this.chartDataSubject.asObservable();
+  loading$ = this.loadingSubject.asObservable();
 
   constructor(
     private apiService: ApiServices,
@@ -71,33 +83,49 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     const currentdate = new Date();
+
+    const chartStartDate = new Date(
+      new Date().setDate(currentdate.getDate() - 3)
+    );
+    const StartDate = new Date(new Date().setDate(currentdate.getDate() - 1));
+    const chartEndDate = new Date(
+      new Date().setDate(currentdate.getDate() + 1)
+    );
+
     this.currentMonth = currentdate.getMonth() + 1;
     this.router.params.subscribe((params) => {
       this.filtervalue = params['status'] ? params['status'] : 'all';
     });
-    this.startDate = `${currentdate.getFullYear()}-${
-      currentdate.getMonth() + 1
-    }-${currentdate.getDate() - 1}`;
+
+    this.startDate = `${StartDate.getFullYear()}-${
+      StartDate.getMonth() + 1
+    }-${StartDate.getDate()}`;
+
     this.startDateforEarnings = `${currentdate.getFullYear()}-${
       currentdate.getMonth() + 1
     }-${currentdate.getDate()}`;
-    this.startDateForChart = `${currentdate.getFullYear()}-${
-      currentdate.getMonth() + 1
-    }-${currentdate.getDate() - 3}`;
+
     this.endDate = `${currentdate.getFullYear()}-${
       currentdate.getMonth() + 1
-    }-${currentdate.getDate() + 1}`;
-    this.endDateForChart = `${currentdate.getFullYear()}-${
-      currentdate.getMonth() + 1
-    }-${currentdate.getDate() + 1}`;
+    }-${currentdate.getDate()}`;
 
-    console.log([this.startDate, this.endDate]);
+    //for chart
+    this.startDateForChart = `${chartStartDate.getFullYear()}-${
+      chartStartDate.getMonth() + 1
+    }-${chartStartDate.getDate()}`;
+    this.endDateForChart = `${chartEndDate.getFullYear()}-${
+      chartEndDate.getMonth() + 1
+    }-${chartEndDate.getDate()}`;
+
+    console.log([this.startDateForChart, this.endDateForChart]);
 
     // this.getCurrentOrder(this.currentPage);
     this.startPolling();
     this.startPolling2();
     this.chartPolling();
     this.monthlyPolling();
+    this.getMonthEarnPolling();
+    console.log(this.isMonthlyFee);
   }
 
   openShare(selectedDetails: any) {
@@ -194,10 +222,19 @@ export class DashboardComponent implements OnInit {
   }
 
   openChart(data: any) {
+    console.log(
+      'chart display',
+      data.map((ele: { created_at: any }) =>
+        this.datePipe.transform(ele.created_at, 'MMMM d, y')
+      )
+    );
     this.earningsFrom = `Earnings From ${this.datePipe.transform(
       data[0]['created_at'],
       'MMMM d, y'
-    )} To ${this.datePipe.transform(data[4]['created_at'], 'MMMM d, y')}`;
+    )} To ${this.datePipe.transform(
+      data[data.length - 1]['created_at'],
+      'MMMM d, y'
+    )}`;
     console.log(data);
     const documentStyle = getComputedStyle(document.documentElement);
     // const textColor = documentStyle.getPropertyValue('--text-color');
@@ -215,7 +252,10 @@ export class DashboardComponent implements OnInit {
           label: `Earnings From ${this.datePipe.transform(
             data[0]['created_at'],
             'MMMM d, y'
-          )} To ${this.datePipe.transform(data[4]['created_at'], 'MMMM d, y')}`,
+          )} To ${this.datePipe.transform(
+            data[data.length - 1]['created_at'],
+            'MMMM d, y'
+          )}`,
           data: data.map((ele: { commission: any }) => ele.commission),
           fill: false,
           tension: 0.4,
@@ -284,7 +324,10 @@ export class DashboardComponent implements OnInit {
         next: (res: any) => {
           console.log('heres the chart');
           console.log(res);
-          this.todays_earnings = res['data']['data'][3]['commission'];
+          const fetchedEarnings = res['data']['data'][3]['commission'];
+
+          // Update todays_earnings only after successfully fetching the data
+          this.todays_earnings = fetchedEarnings;
           this.chartdata = res['data']['data'];
           this.openChart(this.chartdata);
         },
@@ -477,7 +520,13 @@ export class DashboardComponent implements OnInit {
   }
 
   chartPolling(): void {
-    // Use timer to emit values at a fixed interval
+    console.log('heres the date', [
+      this.startDateForChart,
+      this.endDateForChart,
+    ]);
+
+    this.loadingSubject.next(true);
+
     this.chartPollingSubscription = timer(0, 5000)
       .pipe(
         switchMap(() =>
@@ -494,13 +543,19 @@ export class DashboardComponent implements OnInit {
         next: (res: any) => {
           console.log('heres the chart');
           console.log(res);
-          this.todays_earnings = res['data']['data'][3]['commission'];
-          this.chartdata = res['data']['data'];
-          this.openChart(this.chartdata);
+
+          const fetchedEarnings = res['data']['data'][3]['commission'];
+          const fetchedChartData = res['data']['data'];
+
+          this.earningsSubject.next(fetchedEarnings);
+          this.chartDataSubject.next(fetchedChartData);
+          this.openChart(fetchedChartData);
+
+          this.loadingSubject.next(false);
         },
         error: (error: HttpErrorResponse) => {
           console.log(error.error.message);
-          this.loadingpage = false;
+          this.loadingSubject.next(false);
         },
       });
   }
@@ -523,6 +578,12 @@ export class DashboardComponent implements OnInit {
       this.pollingSubscription2.unsubscribe();
     }
   }
+  stopMonthPolling(): void {
+    // Unsubscribe from the polling subscription to stop further requests
+    if (this.getMonthEarnPollingSubscription) {
+      this.getMonthEarnPollingSubscription.unsubscribe();
+    }
+  }
   monthAndFeeStopPolling2(): void {
     // Unsubscribe from the polling subscription to stop further requests
     if (this.monthAndFeepolling) {
@@ -538,13 +599,46 @@ export class DashboardComponent implements OnInit {
   }
 
   searchBookings(event: Event) {
-    this.onsearch = true;
     console.log('stop');
     this.stopPolling();
     const inputElement = event.target as HTMLInputElement;
     this.searchValue = inputElement.value;
+    if (this.searchValue == '') {
+      this.onsearch = false;
+      return;
+    }
+    this.onsearch = true;
     console.log('go');
     this.startPolling();
     console.log(this.searchValue);
+  }
+
+  getThisMonthEarningsFromSubAffiliate() {
+    this.apiService.getEarningsFromSubAffiliate().subscribe({
+      next: (res: any) => {
+        console.log('sub affiliate earnings', res);
+        this.thisSubAffiliateEarnFee = res.total_affiliate_commission;
+        this.thisMonthAdminFee = res.total_admin_commission;
+      },
+      error: (error: HttpErrorResponse) => {
+        console.log(error.error.message);
+      },
+    });
+  }
+
+  getMonthEarnPolling(): void {
+    // Use timer to emit values at a fixed interval
+    this.getMonthEarnPollingSubscription = timer(0, 5000)
+      .pipe(switchMap(() => this.apiService.getEarningsFromSubAffiliate()))
+      .subscribe({
+        next: (res: any) => {
+          console.log('sub affiliate earnings', res);
+          this.thisSubAffiliateEarnFee = res.total_affiliate_commission;
+          this.thisMonthAdminFee = res.total_admin_commission;
+        },
+        error: (error: HttpErrorResponse) => {
+          console.log(error.error.message);
+        },
+      });
   }
 }

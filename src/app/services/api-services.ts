@@ -411,4 +411,79 @@ export class ApiServices {
       }
     );
   }
+
+  getDrivers(search: string, page: string) {
+    return this.http.get(
+      `${this.Root_URL_API}affiliate/get-drivers?page=${page}&search=${search}`,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  deactivateDriver(driverId: string) {
+    return this.http.get(
+      `${this.Root_URL_API}affiliate/deactivate-driver/${driverId}`,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  activateDriver(driverId: string) {
+    return this.http.get(
+      `${this.Root_URL_API}affiliate/activate-driver/${driverId}`,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  addSubAffiliate(data: any) {
+    return this.http.post(
+      `${this.Root_URL_API}affiliate/add-sub-affliate`,
+      data,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  getSubAffiliate(searchValue: string, page: string) {
+    return this.http.get(
+      `${this.Root_URL_API}affiliate/get-sub-affliate?page=${page}&searchValue=${searchValue}`,
+
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  getSubAffiliateDetails() {
+    return this.http.get(
+      `${this.Root_URL_API}affiliate/get-sub-affliate/details`,
+
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  getEarningsFromSubAffiliate() {
+    return this.http.get(
+      `${this.Root_URL_API}affiliate/earnings-from-sub-affiliate`,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  getDriverDetails(driverId: string) {
+    return this.http.get(
+      `${this.Root_URL_API}affiliate/get-drivers-info??driver_id=${driverId}`,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
 }

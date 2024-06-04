@@ -90,8 +90,8 @@ export class BookComponent implements OnInit {
   targetAddressPickOptions = {
     DELIVERY: {
       target: 'delivery',
-      buttonText: 'Set as Affiliate address',
-      placeholderText: 'Affiliate address',
+      buttonText: 'Set as Pickup address',
+      placeholderText: 'Pickup address',
     },
     Destination: {
       target: 'destination',
@@ -233,7 +233,7 @@ export class BookComponent implements OnInit {
       this.deliveryAddress.coords.lng == 0
     ) {
       Swal.fire({
-        title: 'Please Set The Affiliate Address',
+        title: 'Please Set The Pick up Address',
         icon: 'warning',
         timer: 4000,
       });
@@ -444,6 +444,7 @@ export class BookComponent implements OnInit {
   getAffiliateCommission() {
     this.api.getAffiliateCommision().subscribe({
       next: (res: any) => {
+        console.log(res);
         this.commission = res.fixed_markup_amount;
         console.log(this.commission);
         this.getAvailbleVehicle();

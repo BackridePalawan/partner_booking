@@ -184,7 +184,9 @@
               {{
                 (details?.taxi_order?.trip_details?.pickup_dropoff_subtotal ??
                   0) +
-                  (details?.affiliate_order?.commission ?? 0) | number : ".0-0"
+                  (details?.affiliate_order?.commission ??
+                    details?.sub_affiliate_order?.fix_markup_commission ??
+                    0) | number : ".0-0"
               }}
               PHP
             </div>
@@ -272,7 +274,10 @@
         ₱{{
           loadingPage
             ? "LOADING...."
-            : details.total + details.affiliate_order.commission ?? 0
+            : details.total +
+              (details?.affiliate_order?.commission ??
+                details?.sub_affiliate_order?.fix_markup_commission ??
+                0)
         }}
       </p>
     </div>
