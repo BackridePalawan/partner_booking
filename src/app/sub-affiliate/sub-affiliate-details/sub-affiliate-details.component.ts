@@ -1,24 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ApiServices } from '../../services/api-services';
 import { error } from 'console';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-  selector: 'app-driver-details',
-  templateUrl: './driver-details.component.html',
-  styleUrl: './driver-details.component.scss',
+  selector: 'app-sub-affiliate-details',
+  templateUrl: './sub-affiliate-details.component.html',
+  styleUrl: './sub-affiliate-details.component.scss',
 })
-export class DriverDetailsComponent implements OnInit {
-  loading: boolean = true;
-  onsearch: boolean = false;
-  title = 'Driver Details';
-  driver_id = '';
+export class SubAffiliateDetailsComponent {
+  title = 'Sub - Affiliate';
+  loading = true;
+  subAffiliate_id = '';
+  finished_bookings = 0;
+  cancelled_bookings = 0;
+  sub_affiliate_earnings = 0;
+  details: any;
+
   filtervalue = 'all';
   searchValue = '';
-  driverDetails: any;
+  onsearch: boolean = false;
 
-  //table
   totalPage = 0;
   page = 1;
   orders: any[] = [];
@@ -26,25 +29,26 @@ export class DriverDetailsComponent implements OnInit {
   constructor(private route: ActivatedRoute, private api: ApiServices) {}
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
-      const code = params['driverId'] as string;
-      this.driver_id = code;
+      const code = params['sub-affiliate-id'] as string;
+      this.subAffiliate_id = code;
     });
-    console.log(this.driver_id);
-    this.getDriverDetails();
+    console.log(this.subAffiliate_id);
+    this.getDetails();
+    // this.getDriverDetails();
     this.searchOrder(this.page.toString(), this.filtervalue, this.searchValue);
   }
 
-  getDriverDetails() {
-    this.api.getDriverDetails(this.driver_id).subscribe({
-      next: (res) => {
-        this.driverDetails = res;
-        console.log('driver details', res);
+  getDetails() {
+    this.api.getSubAffiliateDetail(this.subAffiliate_id).subscribe({
+      next: (res: any) => {
+        this.details = res.user;
+        this.finished_bookings = res.finished_bookings;
+        this.cancelled_bookings = res.cancelled_bookings;
+        this.sub_affiliate_earnings = res.subAffeliateEarnings;
         this.loading = false;
+        console.log(res);
       },
-      error: (error: HttpErrorResponse) => {
-        console.log(error.error.message);
-        this.loading = false;
-      },
+      error: (error: HttpErrorResponse) => {},
     });
   }
 
@@ -66,7 +70,7 @@ export class DriverDetailsComponent implements OnInit {
   searchOrder(page: string, status: string, searcgValue: string) {
     this.loading = true;
     this.api
-      .getDriverOrders(this.driver_id, status, searcgValue, page)
+      .getSubAffiliateOrder(this.subAffiliate_id, status, searcgValue, page)
       .subscribe({
         next: (res: any) => {
           this.orders = res.data;

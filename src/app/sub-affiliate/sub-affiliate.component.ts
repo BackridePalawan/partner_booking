@@ -22,7 +22,10 @@ export class SubAffiliateComponent implements OnInit {
   }
   loadingpage: boolean = false;
   title = 'Sub Affiliates';
+  selectedDay = 'Monday';
+  deFaultDay = 'Monday';
   isModal = false;
+  openWeeklyPayment = false;
   imageUrl = 'assets/images/camera.jpg';
 
   filtervalue: string = '';
@@ -72,13 +75,26 @@ export class SubAffiliateComponent implements OnInit {
     }
   }
 
+  openWeeklyPaymentModal() {
+    this.openWeeklyPayment = true;
+  }
+
+  closeWeeklyPaymentModal() {
+    this.selectedDay = this.deFaultDay;
+    this.openWeeklyPayment = false;
+  }
+
+  selectDay(day: string) {
+    this.selectedDay = day;
+  }
+
   addAffiliate() {
     this.isModal = true;
   }
 
   submitSubAffiliate() {
     this.isModal = false;
-    this.loading = true;
+    this.loadingpage = true;
     if (this.form.invalid) {
       return;
     }
@@ -114,7 +130,7 @@ export class SubAffiliateComponent implements OnInit {
           icon: 'success',
           timer: 2000,
         });
-        this.loading = false;
+        this.loadingpage = false;
         this.form.patchValue({
           name: '',
           email: '',
@@ -125,6 +141,7 @@ export class SubAffiliateComponent implements OnInit {
           earning_percentage: '',
           profile: '',
         });
+        this.searchSubAfffiliate(this.searchValue, this.currentPage);
       },
       error: (error: HttpErrorResponse) => {
         Swal.fire({
@@ -132,7 +149,7 @@ export class SubAffiliateComponent implements OnInit {
           icon: 'error',
           timer: 2000,
         });
-        this.loading = false;
+        this.loadingpage = false;
         this.isModal = true;
       },
     });
@@ -183,18 +200,26 @@ export class SubAffiliateComponent implements OnInit {
     this.apiService.getSubAffiliate(search, page).subscribe({
       next: (res: any) => {
         console.log('sub_affiliate', res);
+        this.selectedDay = res['paymentSchedule'];
+        this.deFaultDay = res['paymentSchedule'];
         // console.log(res['total']);
-        this.displayedItems = res['data'];
-        this.from = res['from'] ?? '';
-        this.to = res['to'] ?? '';
-        this.totalItem = res['total'] ?? '';
+        this.displayedItems = res['details']['data'];
+        this.from = res['details']['from'] ?? '';
+        this.to = res['details']['to'] ?? '';
+        this.totalItem = res['details']['total'] ?? '';
         this.totalItems =
-          res['links'].length !== 0 ? res['links'].slice(1, -1) : [];
-        console.log(this.displayedItems);
+          res['details']['links'].length !== 0
+            ? res['details']['links'].slice(1, -1)
+            : [];
+        console.log('displayed', this.displayedItems);
         this.nextPage =
-          res['next_page_url'] != null ? res['next_page_url'] : '';
+          res['details']['next_page_url'] != null
+            ? res['details']['next_page_url']
+            : '';
         this.prevPage =
-          res['prev_page_url'] != null ? res['prev_page_url'] : '';
+          res['details']['prev_page_url'] != null
+            ? res['details']['prev_page_url']
+            : '';
         this.loadingpage = false;
         this.onsearch = false;
         this.loading = false;
@@ -211,5 +236,146 @@ export class SubAffiliateComponent implements OnInit {
     this.currentPage = page;
     this.searchSubAfffiliate(this.searchValue, this.currentPage);
     // console.log(this.currentPage);
+  }
+
+  setSubAffiliatePayment() {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: `You want to change the payment schedule ${this.deFaultDay} to ${this.selectedDay}`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.loading = true;
+        this.apiService
+          .setSubAffiliateFee({ paymentSet: this.selectedDay })
+          .subscribe({
+            next: (res: any) => {
+              this.selectedDay = res.day;
+              this.deFaultDay = res.day;
+              this.loading = false;
+              Swal.fire({
+                title: `Payment Schedule set to ${this.selectedDay}`,
+                icon: 'success',
+                timer: 2000,
+              });
+            },
+            error: (error: HttpErrorResponse) => {
+              Swal.fire({
+                title: error.error.message,
+                icon: 'error',
+                timer: 2000,
+              });
+              this.loading = false;
+            },
+          });
+      }
+    });
+  }
+
+  setSubAffiliatePaid(user_id: string, payment_id: string) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.loading = true;
+        this.apiService
+          .setSubAffiliatePaid({ user_id: user_id, payment_id: payment_id })
+          .subscribe({
+            next: (res: any) => {
+              Swal.fire({
+                title: `Payment for ID #${user_id} has been successfully completed.`,
+                icon: 'success',
+                timer: 3000,
+              });
+              this.searchSubAfffiliate(this.searchValue, this.currentPage);
+            },
+            error: (error: HttpErrorResponse) => {
+              console.log(error.error.message);
+            },
+          });
+      }
+    });
+  }
+
+  deactivateSubAffiliate(user_id: string) {
+    Swal.fire({
+      title: 'Are you sure you want to deactivate this account?',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes',
+    }).then((result) => {
+      this.loading = true;
+      if (result.isConfirmed) {
+        console.log(user_id);
+        this.apiService.deactivateSubAffiliate(user_id).subscribe({
+          next: (res: any) => {
+            Swal.fire({
+              timer: 5000,
+              title: 'Deactivated',
+              icon: 'success',
+            });
+            this.searchSubAfffiliate(this.searchValue, this.currentPage);
+            this.loading = false;
+          },
+          error: (error: HttpErrorResponse) => {
+            Swal.fire({
+              timer: 5000,
+              text: error.error.message,
+              icon: 'error',
+            });
+            this.loading = false;
+          },
+        });
+      }
+      this.loading = false;
+    });
+  }
+
+  activateSubAffiliate(user_id: string) {
+    Swal.fire({
+      title: 'Are you sure you want to activate this account?',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes',
+    }).then((result) => {
+      this.loading = true;
+      if (result.isConfirmed) {
+        console.log(user_id);
+        this.apiService.activateSubAffiliate(user_id).subscribe({
+          next: (res: any) => {
+            Swal.fire({
+              timer: 5000,
+              title: 'Activated',
+              icon: 'success',
+            });
+            this.searchSubAfffiliate(this.searchValue, this.currentPage);
+            this.loading = false;
+          },
+          error: (error: HttpErrorResponse) => {
+            Swal.fire({
+              timer: 5000,
+              text: error.error.message,
+              icon: 'error',
+            });
+            this.loading = false;
+          },
+        });
+      }
+      this.loading = false;
+    });
   }
 }

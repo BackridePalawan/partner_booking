@@ -290,7 +290,7 @@
             >
             <input
               type="text"
-              id="email"
+              id="fullname"
               formControlName="fullname"
               required=""
               class="w-full rounded-lg bg-gray-100 px-4 py-2 focus:outline-none shadow-lg border border-solid border-[#00000075]"
@@ -302,7 +302,7 @@
             >
             <input
               type="text"
-              id="email"
+              id="phone"
               formControlName="phone"
               required=""
               class="w-full rounded-lg bg-gray-100 px-4 py-2 focus:outline-none shadow-lg border border-solid border-[#00000075]"
@@ -316,6 +316,7 @@
             <input
               type="email"
               id="email"
+              formControlName="email"
               required=""
               class="w-full rounded-lg bg-gray-100 px-4 py-2 focus:outline-none shadow-lg border border-solid border-[#00000075]"
             />
@@ -375,7 +376,7 @@
                 <div class="flex flex-col justify-between items-">
                   <p class="font-semibold text-12">
                     ₱<span class="font-bold text-12"
-                      >{{ v.base_fare }} Base</span
+                      >{{ v.base_fare + (commission ?? 0) }} Base</span
                     >
                   </p>
                   <p class="font-semibold text-12">
@@ -397,7 +398,9 @@
                 <div class="w-full bg-secondary rounded-2xl">
                   <p class="text-start text-12 text-white py-2 px-3">
                     Estimated Price:
-                    <span class="font-bold text-16">₱{{ v?.total }}</span>
+                    <span class="font-bold text-16"
+                      >₱{{ v?.total + (commission ?? 0) }}</span
+                    >
                   </p>
                 </div>
               </div>

@@ -6,6 +6,7 @@ import { FirebaseService } from '../services/firebase.service';
 import { Subscription, from, switchMap, timer } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-notifications',
@@ -17,11 +18,17 @@ export class NotificationsComponent implements OnInit {
     private route: ActivatedRoute,
     private api: ApiServices,
     private fb: FirebaseService,
-    public datePipe: DatePipe
+    public datePipe: DatePipe,
+    private formBuilder: FormBuilder
   ) {}
   title: string = 'Notifications';
   filterSelect: number = 1;
   selectedPage: number = 1;
+  isSubAffiliate: boolean = true;
+  subAffiliateOnly: boolean = false;
+  driverOnly: boolean = false;
+  sendNotifications: boolean = false;
+  isAll: boolean = true;
   fromPage: string = '1';
   toPage: string = '';
   status: string = 'any';
@@ -29,8 +36,17 @@ export class NotificationsComponent implements OnInit {
   data: any[] = [];
   loadingPage: boolean = true;
 
+  form: FormGroup = this.formBuilder.group({
+    title: ['', Validators.required],
+    message: ['', [Validators.required]],
+    isSubAffiliate: [this.subAffiliateOnly, [Validators.required]],
+    isDriver: [this.driverOnly, [Validators.required]],
+    isAll: [this.isAll, [Validators.required]],
+  });
+
   ngOnInit(): void {
     this.startPolling();
+    this.getUserDetails();
   }
 
   ngOnDestroy(): void {
@@ -94,6 +110,7 @@ export class NotificationsComponent implements OnInit {
     console.log('go');
     this.startPolling();
   }
+
   prev() {
     if (this.selectedPage.toString() == this.fromPage.toString()) {
       return;
@@ -171,5 +188,60 @@ export class NotificationsComponent implements OnInit {
     if (this.pollingSubscription) {
       this.pollingSubscription.unsubscribe();
     }
+  }
+
+  getUserDetails() {
+    this.api.getUserDetails().subscribe({
+      next: (res: any) => {
+        if (res.user.role_name === 'affiliate-partner') {
+          this.isSubAffiliate = false;
+        }
+      },
+      error: (error: HttpErrorResponse) => {},
+    });
+  }
+
+  allSelected(event: any) {
+    const inputElement = event.target as HTMLInputElement;
+    console.log(inputElement.checked);
+    // console.log(this.form.value);
+    this.subAffiliateOnly = false;
+    this.driverOnly = false;
+  }
+  subAffiliateOnlySelected(event: any) {
+    const inputElement = event.target as HTMLInputElement;
+    console.log(inputElement.checked);
+    // console.log(this.form.value);
+    this.isAll = false;
+    this.driverOnly = false;
+  }
+  driverOnlySelected(event: any) {
+    const inputElement = event.target as HTMLInputElement;
+    console.log(inputElement.checked);
+    // console.log(this.form.value);
+    this.subAffiliateOnly = false;
+    this.isAll = false;
+  }
+
+  submit() {
+    if (this.form.valid) {
+      return;
+    }
+    this.api.sendNotification(this.form.valid).subscribe({
+      next: (res) => {
+        Swal.fire({
+          title: 'Notification Sent',
+          icon: 'success',
+          timer: 3000,
+        });
+      },
+      error: (error: HttpErrorResponse) => {
+        Swal.fire({
+          title: error.error.message,
+          icon: 'error',
+          timer: 3000,
+        });
+      },
+    });
   }
 }

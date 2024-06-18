@@ -486,4 +486,110 @@ export class ApiServices {
       }
     );
   }
+
+  getPaymentHistory() {
+    return this.http.get(`${this.Root_URL_API}payment/history`, {
+      headers: this.getTokenHeader(),
+    });
+  }
+  getSubAffiliateDetail(user_Id: string) {
+    return this.http.get(
+      `${this.Root_URL_API}affiliate/sub_affiliate_details/${user_Id}`,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  checkPayment() {
+    return this.http.get(`${this.Root_URL_API}affiliate/checkpayment`, {
+      headers: this.getTokenHeader(),
+    });
+  }
+
+  getDriverOrders(
+    driverId: string,
+    status: string,
+    searhvvalue: string,
+    page: string
+  ) {
+    return this.http.get(
+      `${this.Root_URL_API}affiliate/driver-orders/${driverId}?page=${page}&status=${status}&searchvalue=${searhvvalue}`,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+  getSubAffiliateOrder(
+    driverId: string,
+    status: string,
+    searhvvalue: string,
+    page: string
+  ) {
+    return this.http.get(
+      `${this.Root_URL_API}affiliate/sub_affiliate-orders/${driverId}?page=${page}&status=${status}&searchvalue=${searhvvalue}`,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  getSubAffiliatePayment(user_id: string, page: string) {
+    return this.http.get(
+      `${this.Root_URL_API}affiliate/sub_affiliate_payment_details/${user_id}?page=${page}`,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  setSubAffiliateFee(data: any) {
+    return this.http.post(
+      `${this.Root_URL_API}affiliate/set-sub-affiliate/payment`,
+      data,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  setSubAffiliatePaid(data: any) {
+    return this.http.post(`${this.Root_URL_API}sub-affiliate/pay`, data, {
+      headers: this.getTokenHeader(),
+    });
+  }
+
+  sendNotification(data: any) {
+    return this.http.post(
+      `${this.Root_URL_API}affiliate/send_notification`,
+      data,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  deactivateSubAffiliate(user_id: string) {
+    return this.http.get(
+      `${this.Root_URL_API}affiliate/deactivate-sub-affiliate/${user_id}`,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  activateSubAffiliate(user_id: string) {
+    return this.http.get(
+      `${this.Root_URL_API}affiliate/activate-sub-affiliate/${user_id}`,
+      {
+        headers: this.getTokenHeader(),
+      }
+    );
+  }
+
+  getCustomerReports() {
+    return this.http.get(`${this.Root_URL_API}customer_reports`, {
+      headers: this.getTokenHeader(),
+    });
+  }
 }

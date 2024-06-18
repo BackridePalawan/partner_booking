@@ -26,11 +26,14 @@ export class NavHeaderComponent implements OnInit {
   showDropdown = false;
   submitted = false;
   visible: boolean = false;
+  isDeadline: boolean = false;
   is_subAffilliate: boolean = false;
   subAffilliateFee: string = '0';
   subAffilliateEarningPercentage: string = '0%';
+  subAffilliateWeeklyPayment: string = '';
   visible2: boolean = false;
-
+  amount = 0;
+  message = '';
   buttonText = 'Change';
 
   toggleDropdown() {
@@ -43,6 +46,7 @@ export class NavHeaderComponent implements OnInit {
   profileLink: any;
   editLink: any;
   loadingPage: boolean = true;
+  isAffiliate: boolean = true;
   buttonLoadingPage: boolean = false;
   form: FormGroup = this.formBuilder.group({
     profile: ['', Validators.required],
@@ -55,7 +59,9 @@ export class NavHeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.startPolling();
-    this.getUserDetails();
+    this.getProfilePic();
+    this.checkPayment();
+    // this.getUserDetails()();
     this.getSubAffiliateDetails();
   }
 
@@ -97,11 +103,17 @@ export class NavHeaderComponent implements OnInit {
       .subscribe({
         next: (res: any) => {
           // console.log('fetching', res);
-          const timenow = this.datePipe.transform(new Date(), 'HH:mm');
+          const timenow = this.datePipe.transform(
+            new Date(),
+            'yyyy-MM-dd HH:mm'
+          );
           this.data = res.data.data;
           this.totalNotif = res.data.total;
           this.data.filter((ele) => {
-            if (timenow == this.datePipe.transform(ele.created_at, 'HH:mm')) {
+            if (
+              timenow ==
+              this.datePipe.transform(ele.created_at, 'yyyy-MM-dd HH:mm')
+            ) {
               this.show(ele);
             }
           });
@@ -120,9 +132,10 @@ export class NavHeaderComponent implements OnInit {
     }
   }
 
-  getUserDetails() {
+  getProfilePic() {
     this.api.getProfilePicture().subscribe({
       next: (res: any) => {
+        console.log('data', res);
         this.profileLink = res.file_url;
         this.editLink = res.file_url;
         this.loadingPage = false;
@@ -178,7 +191,7 @@ export class NavHeaderComponent implements OnInit {
     this.submitted = true;
     this.buttonLoadingPage = true;
 
-    console.log(this.passwordChange.value);
+    // console.log(this.passwordChange.value);
     this.api.changePassword(this.passwordChange.value).subscribe({
       next: (res: any) => {
         this.visible2 = false;
@@ -194,7 +207,7 @@ export class NavHeaderComponent implements OnInit {
           new_password_confirmation: '',
         });
         this.buttonLoadingPage = false;
-        console.log('hello');
+        // console.log('hello');
       },
       error: (error: HttpErrorResponse) => {
         this.visible2 = false;
@@ -230,14 +243,15 @@ export class NavHeaderComponent implements OnInit {
     this.api.getSubAffiliateDetails().subscribe({
       next: (res: any) => {
         this.is_subAffilliate = res.is_subAffilliate;
-        console.log('this is sub affiliate', res);
+        // console.log('this is sub affiliate', res);
         if (this.is_subAffilliate) {
           this.subAffilliateFee = this.transform(res.details.sub_affiliate_fee);
           this.subAffilliateEarningPercentage = `${res.details.earning_percentage}%`;
+          this.subAffilliateWeeklyPayment = `${res.details.weeklyPaymentSchedule}`;
           return;
         }
 
-        console.log(res);
+        // console.log(res);
       },
       error: (error: HttpErrorResponse) => {},
     });
@@ -246,5 +260,18 @@ export class NavHeaderComponent implements OnInit {
   transform(value: number): string {
     if (value == null) return '';
     return value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+  }
+
+  checkPayment() {
+    this.api.checkPayment().subscribe({
+      next: (res: any) => {
+        console.log('details', res);
+        this.isDeadline = res.isDeadline;
+        this.message = res.message;
+        this.amount = res.amount;
+        this.isAffiliate = res.isAffiliate;
+      },
+      error: (error: HttpErrorResponse) => {},
+    });
   }
 }

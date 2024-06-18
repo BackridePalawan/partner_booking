@@ -18,6 +18,10 @@ import { isActiveServices } from './services/isActive.services';
 import { DriversComponent } from './drivers/drivers.component';
 import { DriverDetailsComponent } from './drivers/driver-details/driver-details.component';
 import { SubAffiliateComponent } from './sub-affiliate/sub-affiliate.component';
+import { SubAffiliateDetailsComponent } from './sub-affiliate/sub-affiliate-details/sub-affiliate-details.component';
+import { PaymentHistoriesComponent } from './payment-histories/payment-histories.component';
+import { SubAffiliatePaymentDetailsComponent } from './sub-affiliate/sub-affiliate-payment-details/sub-affiliate-payment-details.component';
+import { CustomerReportsComponent } from './customer-reports/customer-reports.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -92,6 +96,25 @@ const routes: Routes = [
       {
         path: 'sub-affiliates',
         component: SubAffiliateComponent,
+        canActivate: [isActiveServices],
+      },
+      {
+        path: 'payment/history',
+        component: PaymentHistoriesComponent,
+      },
+      {
+        path: 'sub-affiliates-details/:sub-affiliate-id',
+        component: SubAffiliateDetailsComponent,
+        canActivate: [isActiveServices],
+      },
+      {
+        path: 'sub-affiliates-payment-details/:sub-affiliate-id',
+        component: SubAffiliatePaymentDetailsComponent,
+        canActivate: [isActiveServices],
+      },
+      {
+        path: 'customer-reports',
+        component: CustomerReportsComponent,
         canActivate: [isActiveServices],
       },
       { path: '', component: DashboardComponent },

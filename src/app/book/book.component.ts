@@ -57,6 +57,7 @@ export class BookComponent implements OnInit {
     fullname: ['', Validators.required],
     phone: ['', [Validators.required]],
     passenger_photo: ['', [Validators.required]],
+    email: ['', [Validators.required]],
   });
 
   @ViewChild('locationPicker') locationPicker?: MapboxComponent;
@@ -473,8 +474,9 @@ export class BookComponent implements OnInit {
               : this.bookForm.get('phone')?.value;
           this.api
             .sendBookingDetails({
-              booking_link: `http://localhost:4200/affiliate/viewbooking/${this.bookorder.order.id}-${this.bookorder.order.code}`,
+              message: `http://localhost:4200/affiliate/viewbooking/${this.bookorder.order.id}-${this.bookorder.order.code}`,
               phone: phonenumber,
+              recipient: this.bookForm.get('email')!.value ?? '',
             })
             .subscribe({
               next: (res) => {

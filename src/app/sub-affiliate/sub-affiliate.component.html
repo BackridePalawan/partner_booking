@@ -6,6 +6,12 @@
   <div class="w-full px-3 py-4 md:mt-[96px] mt-[50px] shadow-lg rounded-lg">
     <div class="w-full flex justify-end items-center px-5">
       <p
+        class="px-3 py-2 bg-primary-dark text-white mt-[40px] md:mt-[94px] mr-3 rounded-lg"
+        (click)="openWeeklyPaymentModal()"
+      >
+        Set Weekly Payment : ({{ selectedDay }})
+      </p>
+      <p
         class="px-3 py-2 bg-primary text-white mt-[40px] md:mt-[94px] mr-3 rounded-lg"
         (click)="addAffiliate()"
       >
@@ -176,23 +182,47 @@
             <td class="px-6 py-2 text-black font-semibold text-16 text-center">
               <div class="flex justify-center gap-2">
                 <a
-                  [routerLink]="['/affiliate/driver/details', item.id]"
+                  [routerLink]="[
+                    '/affiliate/sub-affiliates-details',
+                    item.user_id
+                  ]"
                   target="_blank"
                   class="px-2 py-2 bg-primary rounded-lg text-white hover:bg-secondary w-[50px]"
                 >
                   <i class="fa-solid fa-eye"></i>
                 </a>
+                <a
+                  class="px-2 py-2 bg-primary rounded-lg text-white hover:bg-secondary w-[50px]"
+                  [routerLink]="[
+                    '/affiliate/sub-affiliates-payment-details',
+                    item.user_id
+                  ]"
+                >
+                  <i class="fa-solid fa-receipt"></i>
+                </a>
                 <p
-                  *ngIf="item.is_active == 1"
+                  *ngIf="item.user.is_active == 1"
                   class="px-2 py-2 bg-red rounded-lg text-white hover:bg-secondary w-[50px]"
+                  (click)="deactivateSubAffiliate(item.user_id)"
                 >
                   <i class="fa-solid fa-xmark"></i>
                 </p>
                 <a
-                  *ngIf="item.is_active == 0"
+                  *ngIf="item.user.is_active == 0"
                   class="px-2 py-2 bg-primary rounded-lg text-white hover:bg-secondary w-[50px]"
+                  (click)="activateSubAffiliate(item.user_id)"
                 >
                   <i class="fa-solid fa-check"></i>
+                </a>
+
+                <a
+                  *ngIf="item.deadline_payment"
+                  class="px-2 py-2 bg-red rounded-lg text-white hover:bg-secondary"
+                  (click)="
+                    setSubAffiliatePaid(item.user.id, item.deadline_payment.id)
+                  "
+                >
+                  Payment deadline (₱{{ item.deadline_payment.amount }})
                 </a>
               </div>
             </td>
@@ -260,6 +290,83 @@
       </ul>
     </nav>
   </div>
+  <app-modal *ngIf="openWeeklyPayment">
+    <div class="w-[400px] bg-white p-4 rounded-lg shadow-lg">
+      <p class="w-full text-center font-bold text-2xl mb-4">
+        Set Week Day Payment
+      </p>
+      <p
+        class="w-full text-center font-bold text-16 mb-4 p-2 rounded-lg shadow-lg hover:bg-secondary hover:text-white"
+        (click)="selectDay('Monday')"
+        [class.bg-secondary]="selectedDay === 'Monday'"
+        [class.text-white]="selectedDay === 'Monday'"
+      >
+        Monday
+      </p>
+      <p
+        class="w-full text-center font-bold text-16 mb-4 p-2 rounded-lg shadow-lg hover:bg-secondary hover:text-white"
+        (click)="selectDay('Tuesday')"
+        [class.bg-secondary]="selectedDay === 'Tuesday'"
+        [class.text-white]="selectedDay === 'Tuesday'"
+      >
+        Tuesday
+      </p>
+      <p
+        class="w-full text-center font-bold text-16 mb-4 p-2 rounded-lg shadow-lg hover:bg-secondary hover:text-white"
+        (click)="selectDay('Wednesday')"
+        [class.bg-secondary]="selectedDay === 'Wednesday'"
+        [class.text-white]="selectedDay === 'Wednesday'"
+      >
+        Wednesday
+      </p>
+      <p
+        class="w-full text-center font-bold text-16 mb-4 p-2 rounded-lg shadow-lg hover:bg-secondary hover:text-white"
+        (click)="selectDay('Thursday')"
+        [class.bg-secondary]="selectedDay === 'Thursday'"
+        [class.text-white]="selectedDay === 'Thursday'"
+      >
+        Thursday
+      </p>
+      <p
+        class="w-full text-center font-bold text-16 mb-4 p-2 rounded-lg shadow-lg hover:bg-secondary hover:text-white"
+        (click)="selectDay('Friday')"
+        [class.bg-secondary]="selectedDay === 'Friday'"
+        [class.text-white]="selectedDay === 'Friday'"
+      >
+        Friday
+      </p>
+      <p
+        class="w-full text-center font-bold text-16 mb-4 p-2 rounded-lg shadow-lg hover:bg-secondary hover:text-white"
+        (click)="selectDay('Saturday')"
+        [class.bg-secondary]="selectedDay === 'Saturday'"
+        [class.text-white]="selectedDay === 'Saturday'"
+      >
+        Saturday
+      </p>
+      <p
+        class="w-full text-center font-bold text-16 mb-4 p-2 rounded-lg shadow-lg hover:bg-secondary hover:text-white"
+        (click)="selectDay('Sunday')"
+        [class.bg-secondary]="selectedDay === 'Sunday'"
+        [class.text-white]="selectedDay === 'Sunday'"
+      >
+        Sunday
+      </p>
+      <div class="w-full flex justify-between items-center">
+        <div
+          class="px-3 py-2 text-white bg-primary-dark shadow-lg rounded-lg"
+          (click)="setSubAffiliatePayment()"
+        >
+          Proceed
+        </div>
+        <div
+          class="px-3 py-2 text-white bg-red shadow-lg rounded-lg"
+          (click)="closeWeeklyPaymentModal()"
+        >
+          Cancel
+        </div>
+      </div>
+    </div>
+  </app-modal>
 
   <app-modal *ngIf="isModal">
     <div

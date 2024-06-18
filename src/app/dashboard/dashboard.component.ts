@@ -13,6 +13,7 @@ import { BehaviorSubject } from 'rxjs';
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent implements OnInit {
+  loading = true;
   isMonthlyFee = localStorage.getItem('role') === 'sub-affiliate-partner';
   isPopupOpen: boolean = false;
   visible2: boolean = false;
@@ -314,29 +315,29 @@ export class DashboardComponent implements OnInit {
       });
   }
 
-  getChartDaily() {
-    this.apiService
-      .getEarnings(
-        { startDate: this.startDateForChart, endDate: this.endDateForChart },
-        '1'
-      )
-      .subscribe({
-        next: (res: any) => {
-          console.log('heres the chart');
-          console.log(res);
-          const fetchedEarnings = res['data']['data'][3]['commission'];
+  // getChartDaily() {
+  //   this.apiService
+  //     .getEarnings(
+  //       { startDate: this.startDateForChart, endDate: this.endDateForChart },
+  //       '1'
+  //     )
+  //     .subscribe({
+  //       next: (res: any) => {
+  //         console.log('heres the chart');
+  //         console.log(res);
+  //         const fetchedEarnings = res['data']['data'][3]['commission'];
 
-          // Update todays_earnings only after successfully fetching the data
-          this.todays_earnings = fetchedEarnings;
-          this.chartdata = res['data']['data'];
-          this.openChart(this.chartdata);
-        },
-        error: (error: HttpErrorResponse) => {
-          console.log(error.error.message);
-          this.loadingpage = false;
-        },
-      });
-  }
+  //         // Update todays_earnings only after successfully fetching the data
+  //         this.todays_earnings = fetchedEarnings;
+  //         this.chartdata = res['data']['data'];
+  //         this.openChart(this.chartdata);
+  //       },
+  //       error: (error: HttpErrorResponse) => {
+  //         console.log(error.error.message);
+  //         this.loadingpage = false;
+  //       },
+  //     });
+  // }
 
   pickReason(clickNumber: number, reason: string) {
     this.cancelClick = clickNumber;
@@ -635,6 +636,7 @@ export class DashboardComponent implements OnInit {
           console.log('sub affiliate earnings', res);
           this.thisSubAffiliateEarnFee = res.total_affiliate_commission;
           this.thisMonthAdminFee = res.total_admin_commission;
+          this.loading = false;
         },
         error: (error: HttpErrorResponse) => {
           console.log(error.error.message);

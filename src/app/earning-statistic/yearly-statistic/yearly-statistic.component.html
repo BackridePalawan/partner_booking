@@ -39,7 +39,7 @@
         id=""
         (change)="yearChange($event)"
         class="rounded-lg shadow-lg mx-3"
-        [value]="selectedStartYear"
+        [(ngModel)]="selectedStartYear"
       >
         <option *ngFor="let year of years" [value]="year">{{ year }}</option>
       </select>
@@ -49,7 +49,7 @@
         id=""
         (change)="yearChange($event)"
         class="rounded-lg shadow-lg mx-3"
-        [value]="selectedEndYear"
+        [(ngModel)]="selectedEndYear"
       >
         <option *ngFor="let year of years" [value]="year">{{ year }}</option>
       </select>

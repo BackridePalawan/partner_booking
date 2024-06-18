@@ -25,7 +25,7 @@ export class MonthlyStatisticComponent {
     '12': 'December',
   };
 
-  years: number[] = [];
+  years: string[] = [];
   // chart
   data: any;
 
@@ -65,8 +65,8 @@ export class MonthlyStatisticComponent {
     console.log('your year is = ' + currentYear.toString());
     const startYear = currentYear - 10; // Adjust the range as needed
     const endYear = currentYear + 10;
-    for (let year = startYear - 10; year <= endYear; year++) {
-      this.years.push(year);
+    for (let year = startYear; year <= endYear; year++) {
+      this.years.push(year.toString());
     }
     // Get the current date
     // Initialize with current date

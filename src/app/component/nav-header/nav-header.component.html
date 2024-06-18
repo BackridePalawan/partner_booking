@@ -31,9 +31,16 @@
 
       <div
         *ngIf="showDropdown"
-        class="absolute right-0 mt-6 w-[18rem] bg-white shadow-lg rounded-lg overflow-hidden z-10"
+        class="absolute right-0 mt-6 w-[18rem] bg-white shadow-lg rounded-lg overflow-hidden z-[999999999]"
       >
         <ul>
+          <li
+            class="px-4 py-2 border-b last:border-b-0"
+            [class.hidden]="!is_subAffilliate"
+          >
+            Payment Schedule :
+            {{ subAffilliateWeeklyPayment }}
+          </li>
           <li
             class="px-4 py-2 border-b last:border-b-0"
             [class.hidden]="!is_subAffilliate"
@@ -241,3 +248,42 @@
     </form>
   </div>
 </p-dialog>
+
+<app-dead-line-payment *ngIf="isDeadline">
+  <div class="w-[500px] rounded-lg shadow-lg bg-red p-4">
+    <img
+      src="../../../assets/payment_pic.png
+    "
+      alt=""
+      class="w-full"
+    />
+
+    <p class="text-start font-bold text-white text-16">Dear Ka-Partner,</p>
+    <br />
+    <p class="text-start font-bold text-white text-16">{{ message }}</p>
+    <br />
+    <p class="text-start font-bold text-white text-16">
+      To ensure continued service, please make the payment of ₱{{
+        amount
+      }}
+      today. Payment can be made through
+      {{ isAffiliate ? "your Affiliate" : "Admin" }}, and your account will be
+      reactivated once the payment is received.
+    </p>
+
+    <div class="my-3 w-full flex justify-center items-center gap-4">
+      <p
+        [routerLink]="['/affiliate/payment/history']"
+        class="px-4 py-3 text-white bg-primary-dark text-16 rounded-lg shadow-lg"
+      >
+        View Payment
+      </p>
+      <p
+        (click)="logout()"
+        class="px-4 py-3 bg-white text-16 rounded-lg shadow-lg"
+      >
+        <i class="fa-solid fa-power-off text-red"></i>&nbsp;&nbsp;Logout
+      </p>
+    </div>
+  </div>
+</app-dead-line-payment>

@@ -47,6 +47,12 @@ import { DriversComponent } from './drivers/drivers.component';
 import { DriverDetailsComponent } from './drivers/driver-details/driver-details.component';
 import { SubAffiliateComponent } from './sub-affiliate/sub-affiliate.component';
 import { ModalComponent } from './component/modal/modal.component';
+import { SubAffiliateDetailsComponent } from './sub-affiliate/sub-affiliate-details/sub-affiliate-details.component';
+import { DeadLinePaymentComponent } from './component/dead-line-payment/dead-line-payment.component';
+import { PaymentHistoriesComponent } from './payment-histories/payment-histories.component';
+import { SubAffiliatePaymentDetailsComponent } from './sub-affiliate/sub-affiliate-payment-details/sub-affiliate-payment-details.component';
+
+import { CustomerReportsComponent } from './customer-reports/customer-reports.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -75,6 +81,11 @@ import { ModalComponent } from './component/modal/modal.component';
     DriverDetailsComponent,
     SubAffiliateComponent,
     ModalComponent,
+    SubAffiliateDetailsComponent,
+    DeadLinePaymentComponent,
+    PaymentHistoriesComponent,
+    SubAffiliatePaymentDetailsComponent,
+    CustomerReportsComponent,
   ],
   imports: [
     BrowserModule,

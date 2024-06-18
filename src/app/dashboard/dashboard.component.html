@@ -1,3 +1,4 @@
+<app-loading-component *ngIf="loading"></app-loading-component>
 <app-sidebar></app-sidebar>
 
 <div class="md:ml-64">
@@ -220,7 +221,7 @@
                 <td
                   class="px-6 py-2 text-black font-semibold text-16 text-center"
                 >
-                  {{
+                  ₱{{
                     item.total +
                       (item.affiliate_order
                         ? item.affiliate_order.commission

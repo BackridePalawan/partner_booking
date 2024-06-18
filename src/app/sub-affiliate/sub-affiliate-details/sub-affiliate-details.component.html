@@ -14,31 +14,26 @@
             >
               <img
                 *ngIf="!loading"
-                [src]="driverDetails.user.photo"
+                [src]="details.photo"
                 alt="Description"
                 class="object-cover h-full w-full"
               />
             </div>
 
             <div
-              *ngIf="!loading"
-              class="h-[30px] w-[30px] relative is_online rounded-full shadow-lg"
-              [class.bg-primary]="driverDetails.user.is_online"
-              [class.bg-gray-600]="!driverDetails.user.is_online"
+              class="h-[30px] w-[30px] relative bg-primary is_online rounded-full shadow-lg"
             ></div>
           </div>
           <div>
             <p class="text-16">
               Branch :
               <span class="font-bold" *ngIf="!loading">{{
-                driverDetails.user.branch_name
+                details.branch_name
               }}</span>
             </p>
             <p class="text-16">
               ID :
-              <span class="font-bold" *ngIf="!loading"
-                >#{{ driverDetails.user.id }}</span
-              >
+              <span class="font-bold" *ngIf="!loading"># {{ details.id }}</span>
             </p>
           </div>
         </div>
@@ -56,20 +51,16 @@
               <div class="col-span-9 flex flex-col text-start">
                 <p class="text-2xl text-white font-bold">
                   <span><i class="fa-solid fa-user text-16"></i></span
-                  >&nbsp;&nbsp;<span *ngIf="!loading">{{
-                    this.driverDetails.user.name
-                  }}</span>
+                  >&nbsp;&nbsp;<span *ngIf="!loading">{{ details.name }}</span>
                 </p>
                 <p class="text-16 text-white font-bold">
                   <span><i class="fa-solid fa-envelope"></i></span
-                  >&nbsp;&nbsp;<span *ngIf="!loading">{{
-                    this.driverDetails.user.email
-                  }}</span>
+                  >&nbsp;&nbsp;<span *ngIf="!loading">{{ details.email }}</span>
                 </p>
                 <p class="text-16 text-white font-bold">
                   <span><i class="fa-solid fa-phone"></i></span
                   >&nbsp;&nbsp;<span *ngIf="!loading">{{
-                    this.driverDetails.user.raw_phone
+                    details.raw_phone
                   }}</span>
                 </p>
               </div>
@@ -84,9 +75,7 @@
                 <p class="text-16 text-white font-bold">Finished Bookings</p>
 
                 <p class="text-2xl text-white font-bold">
-                  <span *ngIf="!loading">{{
-                    driverDetails.finisheBookings
-                  }}</span>
+                  <span *ngIf="!loading">{{ finished_bookings }}</span>
                 </p>
               </div>
             </div>
@@ -99,11 +88,7 @@
               <div class="col-span-9 flex flex-col text-start">
                 <p class="text-16 text-white font-bold">Cancelled Bookings</p>
                 <p class="text-2xl text-white font-bold">
-                  <span *ngIf="!loading"
-                    >{{ driverDetails.user.cancel_count }}/{{
-                      driverDetails.user.max_cancel_count
-                    }}</span
-                  >
+                  <span *ngIf="!loading">{{ cancelled_bookings }}</span>
                 </p>
               </div>
             </div>
@@ -111,16 +96,14 @@
               class="col-span-6 px-4 py-4 bg-primary-dark grid grid-cols-12 justify-center items-center rounded-lg h-[120px]"
             >
               <div class="col-span-3 flex items-center justify-center">
-                <img src="../../../assets/tire.svg" alt="" class="h-[60px]" />
+                <i class="fa-solid fa-money-bill text-[60px]"></i>
               </div>
               <div class="col-span-9 flex flex-col text-start">
-                <p class="text-2xl text-white font-bold">Vehicle</p>
                 <p class="text-16 text-white font-bold">
-                  <span *ngIf="!loading"
-                    >{{ driverDetails.user.vehicle.car_model.name }} ({{
-                      driverDetails.user.vehicle.vehicle_type.name
-                    }})</span
-                  >
+                  Sub Affiliate Earnings
+                </p>
+                <p class="text-2xl text-white font-bold">
+                  <span *ngIf="!loading">₱ {{ sub_affiliate_earnings }}</span>
                 </p>
               </div>
             </div>
@@ -235,6 +218,7 @@
         <div class="w-full flex justify-end items-center gap-3 my-4">
           <div
             class="px-3 py-3 bg-primary flex justify-center items-center rounded-lg"
+            (click)="prevPage()"
           >
             <i class="fa-solid fa-arrow-left"></i>
           </div>

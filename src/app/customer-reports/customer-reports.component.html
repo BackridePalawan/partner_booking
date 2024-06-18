@@ -1,0 +1,40 @@
+<app-sidebar></app-sidebar>
+
+<div class="md:ml-64">
+  <app-nav-header [title]="title"></app-nav-header>
+  <div
+    class="w-full h-screen px-4 flex justify-center items-center flex-col gap-5 bg-gray-100"
+  >
+    <div class="text-center text-2xl font-bold">Customer Reports</div>
+    <div class="p-4 bg-white rounded-2xl w-full">
+      <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table
+          class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+        >
+          <thead
+            class="text-xs uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+          >
+            <tr>
+              <th scope="col" class="px-6 py-3">Driver</th>
+              <th scope="col" class="px-6 py-3">Booking#</th>
+              <th scope="col" class="px-6 py-3">Message</th>
+              <th scope="col" class="px-6 py-3">Created At</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let report of reports" class="border-b">
+              <td class="px-6 py-4">{{ report.order.driver.name }}</td>
+              <td class="px-6 py-4">{{ report.order_id }}</td>
+              <td class="px-6 py-4">{{ report.message }}</td>
+              <td class="px-6 py-4">
+                {{
+                  datePipe.transform(report.created_at, "MMMM d, y, hh:mm:ss a")
+                }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

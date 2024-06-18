@@ -157,6 +157,16 @@
           <span>Transactions</span>
         </a>
       </li>
+
+      <li class="px-4 py-2 hover:bg-gray-700 rounded relative">
+        <a
+          [routerLink]="['/affiliate/payment/history']"
+          class="flex items-center"
+        >
+          <i class="fa-solid fa-receipt text-[24px] mr-2"></i>
+          <span>Payment Histories</span>
+        </a>
+      </li>
       <li
         class="px-4 py-2 hover:bg-gray-700 rounded relative"
         [class.hidden]="hidden"
@@ -173,6 +183,21 @@
         >
           <i class="fa-solid fa-users-line text-[24px] mr-2"></i>
           <span>Sub Affiliate</span>
+        </a>
+      </li>
+      <li class="px-4 py-2 hover:bg-gray-700 rounded relative">
+        <div
+          class="w-full h-full absolute bg-[#06060663] not_active rounded flex justify-end items-center"
+          *ngIf="!is_active"
+        >
+          <i class="fa-solid fa-lock text-[20px] text-white px-3"></i>
+        </div>
+        <a
+          [routerLink]="['/affiliate/customer-reports']"
+          class="flex items-center"
+        >
+          <i class="fa-solid fa-flag text-red text-[24px] mr-2"></i>
+          <span>Customer Reports</span>
         </a>
       </li>
     </ul>
