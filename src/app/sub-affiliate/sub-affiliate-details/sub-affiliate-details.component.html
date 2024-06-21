@@ -3,10 +3,10 @@
 <div class="md:ml-64">
   <app-nav-header [title]="title"></app-nav-header>
   <div class="p-4 w-full flex flex-col justify-center items-center">
-    <div class="w-full h-[400px] bg-white mt-[75px] rounded-lg shadow-lg grid">
+    <div class="w-full bg-white mt-[75px] rounded-lg shadow-lg grid">
       <div class="w-full grid grid-cols-12">
         <div
-          class="w-full col-span-4 flex flex-col justify-center items-center"
+          class="w-full col-span-12 flex flex-col justify-center items-center"
         >
           <div>
             <div
@@ -37,10 +37,10 @@
             </p>
           </div>
         </div>
-        <div class="col-span-8 flex justify-center items-center">
-          <div class="w-full grid grid-cols-12 gap-4 h-[200px]">
+        <div class="col-span-12 flex justify-center items-center">
+          <div class="w-full grid grid-cols-12 gap-4">
             <div
-              class="col-span-6 px-4 py-4 bg-primary-dark grid grid-cols-12 justify-center items-center rounded-lg h-[120px]"
+              class="col-span-12 sm:col-span-6 px-4 py-4 bg-primary-dark grid grid-cols-12 justify-center items-center rounded-lg h-[120px]"
             >
               <div class="col-span-3 flex items-center justify-center">
                 <i
@@ -66,7 +66,7 @@
               </div>
             </div>
             <div
-              class="col-span-6 px-4 py-4 bg-secondary grid grid-cols-12 justify-center items-center rounded-lg h-[120px]"
+              class="col-span-12 sm:col-span-6 px-4 py-4 bg-secondary grid grid-cols-12 justify-center items-center rounded-lg h-[120px]"
             >
               <div class="col-span-3 flex items-center justify-center">
                 <i class="fa-solid fa-bag-shopping text-[60px] text-white"></i>
@@ -80,7 +80,7 @@
               </div>
             </div>
             <div
-              class="col-span-6 px-4 py-4 bg-red grid grid-cols-12 justify-center items-center rounded-lg h-[120px]"
+              class="col-span-12 sm:col-span-6 px-4 py-4 bg-red grid grid-cols-12 justify-center items-center rounded-lg h-[120px]"
             >
               <div class="col-span-3 flex items-center justify-center">
                 <i class="fa-solid fa-xmark text-[60px] text-white"></i>
@@ -93,7 +93,7 @@
               </div>
             </div>
             <div
-              class="col-span-6 px-4 py-4 bg-primary-dark grid grid-cols-12 justify-center items-center rounded-lg h-[120px]"
+              class="col-span-12 sm:col-span-6 px-4 py-4 bg-primary-dark grid grid-cols-12 justify-center items-center rounded-lg h-[120px]"
             >
               <div class="col-span-3 flex items-center justify-center">
                 <i class="fa-solid fa-money-bill text-[60px]"></i>
@@ -110,133 +110,133 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="w-full rounded-lg shadow-lg grid grid-cols-12 mt-4 p-4">
-      <div class="col-span-12">
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-          <div
-            class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4"
-          >
-            <div>
-              <select
-                name=""
-                id=""
-                class="rounded-lg shadow-lg px-4 mx-3"
-                (change)="statusChange($event)"
-                [value]="filtervalue"
-              >
-                <option value="all">Any</option>
-                <option value="pending">Pending</option>
-                <option value="preparing">Preparing</option>
-                <option value="ready">Ready</option>
-                <option value="enroute">Enroute</option>
-                <option value="delivered">Delivered</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
-            </div>
-            <label for="table-search" class="sr-only">Search</label>
-            <div class="relative">
-              <div
-                class="absolute inset-y-0 left-0 rtl:inset-r-0 rtl:right-0 flex items-center ps-3 pointer-events-none"
-              >
-                <svg
-                  class="w-5 h-5 text-gray-500 dark:text-gray-400"
-                  aria-hidden="true"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
+      <div class="w-full rounded-lg shadow-lg grid grid-cols-12 mt-4 p-4">
+        <div class="col-span-12">
+          <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <div
+              class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4"
+            >
+              <div>
+                <select
+                  name=""
+                  id=""
+                  class="rounded-lg shadow-lg px-4 mx-3"
+                  (change)="statusChange($event)"
+                  [value]="filtervalue"
                 >
-                  <path
-                    fill-rule="evenodd"
-                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
+                  <option value="all">Any</option>
+                  <option value="pending">Pending</option>
+                  <option value="preparing">Preparing</option>
+                  <option value="ready">Ready</option>
+                  <option value="enroute">Enroute</option>
+                  <option value="delivered">Delivered</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
               </div>
+              <label for="table-search" class="sr-only">Search</label>
+              <div class="relative">
+                <div
+                  class="absolute inset-y-0 left-0 rtl:inset-r-0 rtl:right-0 flex items-center ps-3 pointer-events-none"
+                >
+                  <svg
+                    class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                      clip-rule="evenodd"
+                    ></path>
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  id="table-search"
+                  (input)="searchOrderEvent($event)"
+                  class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Search for Booking"
+                />
+              </div>
+            </div>
+            <table
+              class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+            >
+              <thead
+                class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+              >
+                <tr>
+                  <th scope="col" class="px-6 py-3">Booking Id</th>
+                  <th scope="col" class="px-6 py-3">Code</th>
+                  <th scope="col" class="px-6 py-3">Customer Name</th>
+                  <th scope="col" class="px-6 py-3">Status</th>
+                  <th scope="col" class="px-6 py-3">Executed by</th>
+                  <th scope="col" class="px-6 py-3">Total</th>
+                  <th scope="col" class="px-6 py-3">Created at</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="let order of orders"
+                  class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                >
+                  <td class="px-6 py-4">{{ order.id }}</td>
+                  <td class="px-6 py-4">{{ order.code }}</td>
+                  <td class="px-6 py-4">
+                    {{ order.taxi_order.passenger_full_name }}
+                  </td>
+                  <td class="px-6 py-4">
+                    {{ order.status }}
+                  </td>
+                  <td class="px-6 py-4">
+                    {{
+                      order.affiliate_order
+                        ? "Affiliate"
+                        : order.sub_affiliate_order
+                        ? "Sub-Affiliate"
+                        : ""
+                    }}
+                  </td>
+                  <td class="px-6 py-4">
+                    {{
+                      order.total +
+                        (order?.affiliate_order?.commission ??
+                          order?.sub_affiliate_order?.fix_markup_commission ??
+                          0)
+                    }}
+                  </td>
+                  <td class="px-6 py-4">
+                    {{ order.formatted_date }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="w-full flex justify-end items-center gap-3 my-4">
+            <div
+              class="px-3 py-3 bg-primary flex justify-center items-center rounded-lg"
+              (click)="prevPage()"
+            >
+              <i class="fa-solid fa-arrow-left"></i>
+            </div>
+            <div class="flex justify-center items-center gap-2">
               <input
                 type="text"
-                id="table-search"
-                (input)="searchOrderEvent($event)"
-                class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Search for Booking"
+                class="rounded-lg shadow-lg w-[50px]"
+                [value]="page"
               />
+              <p class="font-bold text-16 px-3 py-3">
+                /&nbsp;&nbsp;&nbsp;{{ totalPage }}
+              </p>
             </div>
-          </div>
-          <table
-            class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-          >
-            <thead
-              class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+            <div
+              class="px-3 py-3 bg-primary flex justify-center items-center rounded-lg"
+              (click)="nextPage()"
             >
-              <tr>
-                <th scope="col" class="px-6 py-3">Booking Id</th>
-                <th scope="col" class="px-6 py-3">Code</th>
-                <th scope="col" class="px-6 py-3">Customer Name</th>
-                <th scope="col" class="px-6 py-3">Status</th>
-                <th scope="col" class="px-6 py-3">Executed by</th>
-                <th scope="col" class="px-6 py-3">Total</th>
-                <th scope="col" class="px-6 py-3">Created at</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                *ngFor="let order of orders"
-                class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-              >
-                <td class="px-6 py-4">{{ order.id }}</td>
-                <td class="px-6 py-4">{{ order.code }}</td>
-                <td class="px-6 py-4">
-                  {{ order.taxi_order.passenger_full_name }}
-                </td>
-                <td class="px-6 py-4">
-                  {{ order.status }}
-                </td>
-                <td class="px-6 py-4">
-                  {{
-                    order.affiliate_order
-                      ? "Affiliate"
-                      : order.sub_affiliate_order
-                      ? "Sub-Affiliate"
-                      : ""
-                  }}
-                </td>
-                <td class="px-6 py-4">
-                  {{
-                    order.total +
-                      (order?.affiliate_order?.commission ??
-                        order?.sub_affiliate_order?.fix_markup_commission ??
-                        0)
-                  }}
-                </td>
-                <td class="px-6 py-4">
-                  {{ order.formatted_date }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="w-full flex justify-end items-center gap-3 my-4">
-          <div
-            class="px-3 py-3 bg-primary flex justify-center items-center rounded-lg"
-            (click)="prevPage()"
-          >
-            <i class="fa-solid fa-arrow-left"></i>
-          </div>
-          <div class="flex justify-center items-center gap-2">
-            <input
-              type="text"
-              class="rounded-lg shadow-lg w-[50px]"
-              [value]="page"
-            />
-            <p class="font-bold text-16 px-3 py-3">
-              /&nbsp;&nbsp;&nbsp;{{ totalPage }}
-            </p>
-          </div>
-          <div
-            class="px-3 py-3 bg-primary flex justify-center items-center rounded-lg"
-            (click)="nextPage()"
-          >
-            <i class="fa-solid fa-arrow-right"></i>
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
           </div>
         </div>
       </div>

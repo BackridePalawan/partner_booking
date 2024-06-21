@@ -3,11 +3,14 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
+    "start": "ng serve --proxy-config proxy.conf.json",
+    "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:booking_partner": "node dist/booking_partner/server/server.mjs"
+    "analyze": "webpack-bundle-analyzer dist/booking-partner/stats.json",
+    "serve:ssr:booking_partner": "node dist/booking_partner/server/server.mjs",
+    "serveOpen": "ng serve --host=0.0.0.0",
+    "build_deploy": "ng build --configuration production && firebase deploy"
   },
   "private": true,
   "dependencies": {

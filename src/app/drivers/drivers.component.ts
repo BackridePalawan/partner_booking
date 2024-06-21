@@ -4,6 +4,8 @@ import { ApiServices } from '../services/api-services';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import Swal from 'sweetalert2';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { error } from 'node:console';
 
 @Component({
   selector: 'app-drivers',
@@ -12,7 +14,7 @@ import Swal from 'sweetalert2';
 })
 export class DriversComponent {
   title = 'Drivers';
-
+  sendlinktoDriver = false;
   filtervalue: string = '';
   loadingpage: boolean = true;
   loading: boolean = true;
@@ -30,6 +32,12 @@ export class DriversComponent {
   displayedItems: any[] = [];
   searchValue: string = '';
 
+  form: FormGroup = this.formBuilder.group({
+    phone: ['', Validators.required],
+    recipient: ['', [Validators.required]],
+    driver: true,
+  });
+
   ngOnInit(): void {
     // this.router.params.subscribe((params) => {
     //   this.filtervalue = params['status'] ? params['status'] : 'all';
@@ -40,6 +48,7 @@ export class DriversComponent {
 
   constructor(
     private apiService: ApiServices,
+    private formBuilder: FormBuilder,
     private router: ActivatedRoute,
     private route: Router,
     public datePipe: DatePipe
@@ -175,6 +184,29 @@ export class DriversComponent {
         });
       }
       this.loading = false;
+    });
+  }
+
+  sendLink() {
+    console.log(this.form.value);
+    this.loading = true;
+    this.apiService.sendDriverLink(this.form.value).subscribe({
+      next: (res) => {
+        Swal.fire({
+          title: 'Sent',
+          icon: 'success',
+          timer: 2000,
+        });
+        this.sendlinktoDriver = false;
+      },
+      error: (error: HttpErrorResponse) => {
+        Swal.fire({
+          title: error.error.message,
+          icon: 'error',
+          timer: 2000,
+        });
+        this.sendlinktoDriver = false;
+      },
     });
   }
 }

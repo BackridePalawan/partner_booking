@@ -124,6 +124,7 @@ export class RegisterComponent implements OnInit {
         timer: 2000,
         showConfirmButton: false,
       });
+
       return;
     }
     this.loadingPage = true;
@@ -136,7 +137,7 @@ export class RegisterComponent implements OnInit {
         next: (res) => {
           this.register();
           // console.log(this.form.value);
-          // this.loadingPage = false;
+          this.loadingPage = false;
         },
         error: (error: HttpErrorResponse) => {
           // Swal.fire({

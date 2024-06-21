@@ -592,4 +592,10 @@ export class ApiServices {
       headers: this.getTokenHeader(),
     });
   }
+
+  sendDriverLink(data: any) {
+    return this.http.post(`${this.Root_URL_API}send/driverLink`, data, {
+      headers: this.getTokenHeader(),
+    });
+  }
 }
