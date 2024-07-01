@@ -96,6 +96,11 @@ export class SubAffiliateComponent implements OnInit {
     this.isModal = false;
     this.loadingpage = true;
     if (this.form.invalid) {
+      Swal.fire({
+        title: 'Please input the required details',
+        icon: 'error',
+        timer: 2000,
+      });
       return;
     }
     console.log(this.form.value);

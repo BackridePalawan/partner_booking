@@ -36,6 +36,8 @@ export class NavHeaderComponent implements OnInit {
   message = '';
   buttonText = 'Change';
 
+  hasBeenNotify: any = [];
+
   toggleDropdown() {
     this.showDropdown = !this.showDropdown;
   }
@@ -114,7 +116,10 @@ export class NavHeaderComponent implements OnInit {
               timenow ==
               this.datePipe.transform(ele.created_at, 'yyyy-MM-dd HH:mm')
             ) {
-              this.show(ele);
+              if (!this.hasBeenNotify.includes(ele.id)) {
+                this.hasBeenNotify.push(ele.id);
+                this.show(ele);
+              }
             }
           });
         },

@@ -15,7 +15,7 @@ export class RegisterComponent implements OnInit {
 
   submitted = false;
   loadingPage = false;
-  otpRequest = false;
+  otpRequest = true;
   branches: any[] = [];
 
   constructor(

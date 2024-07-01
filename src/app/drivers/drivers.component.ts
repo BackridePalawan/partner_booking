@@ -35,7 +35,7 @@ export class DriversComponent {
   form: FormGroup = this.formBuilder.group({
     phone: ['', Validators.required],
     recipient: ['', [Validators.required]],
-    driver: true,
+    driver: 'true',
   });
 
   ngOnInit(): void {
@@ -197,14 +197,16 @@ export class DriversComponent {
           icon: 'success',
           timer: 2000,
         });
+        this.loading = false;
         this.sendlinktoDriver = false;
       },
       error: (error: HttpErrorResponse) => {
+        console.log(error);
         Swal.fire({
-          title: error.error.message,
+          title: error.error.error,
           icon: 'error',
-          timer: 2000,
         });
+        this.loading = false;
         this.sendlinktoDriver = false;
       },
     });

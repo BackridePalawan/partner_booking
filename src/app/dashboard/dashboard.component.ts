@@ -14,7 +14,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class DashboardComponent implements OnInit {
   loading = true;
-  sendlinktoDriver = false;
+
   isMonthlyFee = localStorage.getItem('role') === 'sub-affiliate-partner';
   isPopupOpen: boolean = false;
   visible2: boolean = false;

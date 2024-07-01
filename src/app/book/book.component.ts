@@ -477,6 +477,7 @@ export class BookComponent implements OnInit {
               message: `http://localhost:4200/affiliate/viewbooking/${this.bookorder.order.id}-${this.bookorder.order.code}`,
               phone: phonenumber,
               recipient: this.bookForm.get('email')!.value ?? '',
+              driver: 'false',
             })
             .subscribe({
               next: (res) => {
